@@ -115,3 +115,13 @@ checkRowCompletness (x:xs) c =
 
 --getColumn :: [[Field]] -> Int -> [Field]
 --getColumn
+
+{-
+-- funkcja rozwiazujaca lamiglowke
+-- iteracyjnie wykresla pola i ustawia zbiorniki, az tablice gorna i lewa sie nie wyzeruja
+solve :: Puzzle -> Puzzle
+solve (Puzzle leftTab upperTab fields) = if any (>0) leftTab || any (>0) upperTab then
+        solve $ setGasFields $ setEmptyFields (Puzzle leftTab upperTab fields)
+    else
+        (Puzzle leftTab upperTab fields)
+-}
