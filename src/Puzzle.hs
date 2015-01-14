@@ -63,7 +63,7 @@ setEmptyFields (Puzzle leftTab upperTab fields) x y =
     in
     if
         (fields!!y!!x /= House) && (
-                        (checkAdjecentQuad (Puzzle leftTab upperTab fields) x y House) /= NotFound  ||
+                        (checkAdjecentQuad (Puzzle leftTab upperTab fields) x y House) == NotFound  ||
                         leftTab!!y == 0 ||
                         checkRowCompletness (fields!!y) (leftTab!!y)     
                         -- TODO: Sprawdzić też kolumny
@@ -106,7 +106,10 @@ setGasFields (Puzzle leftTab upperTab fields) x y =
     if
         (fields!!y!!x == Unknown) &&
         (dir /= NotFound) &&
-        (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasUp)
+        (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasUp) &&
+        (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasRight) &&
+        (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasLeft) &&
+        (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasBottom)
     then
         setGasFields 
             (setAdjacentField 
@@ -117,7 +120,7 @@ setGasFields (Puzzle leftTab upperTab fields) x y =
                         (take y fields)++
                         [(
                             (take x (fields!!y))++
-                            [case dir of Puzzle.Left -> GasLeft;Puzzle.Right -> GasRight;Up -> GasUp;Down -> GasBottom;]++ --TODO (probably done): Wstawiać faktyczny kierunek zbiornika w zależności od 'dir'; zmieniać House na GasHouse
+                            [case dir of Puzzle.Left -> GasLeft;Puzzle.Right -> GasRight;Up -> GasUp;Down -> GasBottom;]++
                             (drop (x+1) (fields!!y))
                         )]++
                         (drop (y+1) fields)
@@ -195,7 +198,7 @@ checkAdjecentQuad (Puzzle leftTab upperTab fields) x y field =
 
 --Sprawdza, czy we wszystkich polach przyległych do danego jest podany w parametrze typ pola
 checkAdjecentOcta :: Puzzle -> Int -> Int -> Field -> Bool
-checkAdjecentOcta (Puzzle leftTab upperTab fields) x y field =
+checkAdjecentOcta (Puzzle leftTab upperTab fields) y x field =
     if
         (y > 0  && fields!!(y-1)!!x == field) || --S
         (y < (length upperTab) -1 && fields!!(y+1)!!x == field) || --N
@@ -224,3 +227,6 @@ checkRowCompletness (x:xs) c =
         checkRowCompletness (xs) (c-1)
        else
         checkRowCompletness (xs) c
+
+--getColumn :: [[Field]] -> Int -> [Field]
+--getColumn
