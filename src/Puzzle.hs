@@ -18,7 +18,7 @@ instance Show Field where
         GasLeft -> "l"
 
 data Puzzle = Puzzle [Int] [Int] [[Field]]
-data Dirs = Up | Right | Down | Left | NotFound deriving Eq
+data Dirs = Up | Right | Down | Left | NotFound | MultipleFound deriving Eq
 
 convertInput :: Int -> Int -> [(Int,Int)] -> [[Field]]
 convertInput (-1) _ _ = []
@@ -86,14 +86,13 @@ setAdjacentField (Puzzle leftTab upperTab fields) x y dir field =
 --Sprawdza, czy w polach krzyżowo przyległych do danego jest podany w parametrze typ pola
 checkAdjecentQuad :: Puzzle -> Int -> Int -> Field -> Dirs
 checkAdjecentQuad (Puzzle leftTab upperTab fields) x y field =
-    if
-        (y > 0  && fields!!(y-1)!!x == field) then Down else
-    if
-        (y < (length upperTab) -1 && fields!!(y+1)!!x == field) then Up else
-    if
-        (x > 0 && fields!!y!!(x-1) == field) then Puzzle.Left else
-    if
-        (x < (length leftTab) -1 && fields!!y!!(x+1) == field) then Puzzle.Right else NotFound
+    let dirs= [(y > 0  && fields!!(y-1)!!x == field)] ++ [(y < (length upperTab) -1 && fields!!(y+1)!!x == field)] ++ [(x > 0 && fields!!y!!(x-1) == field)] ++ [(x < (length leftTab) -1 && fields!!y!!(x+1) == field)]
+        trues=length$filter (==True) dirs
+    in
+    case trues of
+        0 -> NotFound
+        1 -> if dirs!!0 then Down else if dirs!!1 then Up else if dirs!!2 then Puzzle.Left else Puzzle.Right
+        _ -> MultipleFound
 
 --Sprawdza, czy we wszystkich polach przyległych do danego jest podany w parametrze typ pola
 checkAdjecentOcta :: Puzzle -> Int -> Int -> Field -> Bool
