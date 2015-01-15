@@ -228,5 +228,6 @@ checkRowCompletness (x:xs) c =
        else
         checkRowCompletness (xs) c
 
---getColumn :: [[Field]] -> Int -> [Field]
---getColumn
+getColumn :: [[Field]] -> Int -> Int-> [Field]
+getColumn _ _ 0 = []
+getColumn fields y x = [fields!!x!!y] ++ getColumn fields y (x-1)
