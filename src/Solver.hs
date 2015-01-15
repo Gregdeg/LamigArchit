@@ -56,6 +56,7 @@ setGasFields (Puzzle leftTab upperTab fields) x y =
     if
         (fields!!y!!x == Unknown) &&
         (dir /= NotFound) &&
+        (dir /= MultipleFound) &&    
         (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasUp) &&
         (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasRight) &&
         (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasLeft) &&
@@ -64,8 +65,8 @@ setGasFields (Puzzle leftTab upperTab fields) x y =
         setGasFields 
             (setAdjacentField 
                 (Puzzle
-                    leftTab
-                    upperTab
+                    ((take y leftTab)++[leftTab!!y-1]++(drop (y+1) leftTab))
+                    ((take x upperTab)++[upperTab!!x-1]++(drop (x+1) upperTab))
                     (
                         (take y fields)++
                         [(
@@ -115,14 +116,13 @@ checkRowCompletness (x:xs) c =
 --bierze kolumnę indeksując od 0
 getColumn :: [[Field]] -> Int -> Int-> [Field]
 getColumn _ (-1) _ = []
-getColumn fields x y =[fields!!x!!y] ++  getColumn fields (x-1) y
+getColumn fields x y = getColumn fields (x-1) y++[fields!!x!!y]
 
-{-
+
 -- funkcja rozwiazujaca lamiglowke
 -- iteracyjnie wykresla pola i ustawia zbiorniki, az tablice gorna i lewa sie nie wyzeruja
 solve :: Puzzle -> Puzzle
 solve (Puzzle leftTab upperTab fields) = if any (>0) leftTab || any (>0) upperTab then
-        solve $ setGasFields $ setEmptyFields (Puzzle leftTab upperTab fields)
+        solve $ setGasFields (setEmptyFields (Puzzle leftTab upperTab fields) 5 5) 5 5
     else
         (Puzzle leftTab upperTab fields)
--}
