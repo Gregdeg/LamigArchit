@@ -18,16 +18,16 @@ instance Show Field where
         GasLeft -> "l"
 
 data Puzzle = Puzzle [Int] [Int] [[Field]]
-data Dirs = Up | Right | Down | Left | NotFound deriving Eq
-
+data Dirs = Up | Right | Down | Left | NotFound | MultipleFound deriving Eq
+data Completness = Full | Equal | None
 convertInput :: Int -> Int -> [(Int,Int)] -> [[Field]]
 convertInput (-1) _ _ = []
 convertInput v h tuples =
     convertInput (v-1) h tuples  ++
     [
     convertToRow
-        (map 
-            snd 
+        (map
+            snd
             (
                 Prelude.filter
                     (\(x,y) -> x == v)
@@ -85,28 +85,32 @@ setAdjacentField (Puzzle leftTab upperTab fields) x y dir field =
 
 --Sprawdza, czy w polach krzyżowo przyległych do danego jest podany w parametrze typ pola
 checkAdjecentQuad :: Puzzle -> Int -> Int -> Field -> Dirs
+checkAdjecentQuad _ (-1) _ _ = NotFound
+checkAdjecentQuad _ _ (-1) _ = NotFound
 checkAdjecentQuad (Puzzle leftTab upperTab fields) x y field =
-    if
-        (y > 0  && fields!!(y-1)!!x == field) then Down else
-    if
-        (y < (length upperTab) -1 && fields!!(y+1)!!x == field) then Up else
-    if
-        (x > 0 && fields!!y!!(x-1) == field) then Puzzle.Left else
-    if
-        (x < (length leftTab) -1 && fields!!y!!(x+1) == field) then Puzzle.Right else NotFound
+    let dirs = [(y > 0  && fields!!(y-1)!!x == field)]
+                ++ [(y < ((length upperTab) -1) && fields!!(y+1)!!x == field)]
+                ++ [(x > 0 && fields!!y!!(x-1) == field)]
+                ++ [(x < ((length leftTab) -1 ) && fields!!y!!(x+1) == field)]
+        trues = length$filter (==True) dirs
+    in
+    case trues of
+        0 -> NotFound
+        1 -> if dirs!!0 then Down else if dirs!!1 then Up else if dirs!!2 then Puzzle.Left else Puzzle.Right
+        _ -> MultipleFound
 
 --Sprawdza, czy we wszystkich polach przyległych do danego jest podany w parametrze typ pola
 checkAdjecentOcta :: Puzzle -> Int -> Int -> Field -> Bool
-checkAdjecentOcta (Puzzle leftTab upperTab fields) y x field =
+checkAdjecentOcta (Puzzle leftTab upperTab fields) x y field =
     if
         (y > 0  && fields!!(y-1)!!x == field) || --S
-        (y < (length upperTab) -1 && fields!!(y+1)!!x == field) || --N
+        (y < ((length upperTab) -1) && fields!!(y+1)!!x == field) || --N
         (x > 0 && fields!!y!!(x-1) == field) || --W
-        (x < (length leftTab) -1 && fields!!y!!(x+1) == field) || --E
+        (x < ((length leftTab) -1) && fields!!y!!(x+1) == field) || --E
         (y > 0 && x > 0 && fields!!(y-1)!!(x-1) == field) || --SW
-        (y > 0 && x < (length leftTab) &&  fields!!(y-1)!!(x+1) == field) || --SE
+        (y > 0 && x < (length leftTab) -1 &&  fields!!(y-1)!!(x+1) == field) || --SE
         (x > 0 && y < (length upperTab) -1 && fields!!(y+1)!!(x-1) == field) || --NW
-        (x < (length leftTab) -1 && x < (length leftTab) && fields!!(y+1)!!(x+1) == field) --NE
+        (x < (length leftTab) -1 && x < (length leftTab) -1 && fields!!(y+1)!!(x+1) == field) --NE
     then False
     else True
 
