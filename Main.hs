@@ -16,7 +16,8 @@ main = do
                  hCounts <- return (read (linesOfFile !! 1) :: [Int])
                  grid <- return (read (linesOfFile !! 2) :: [(Int,Int)])
                  let puzzle = Puzzle vCounts hCounts (convertInput (length vCounts) (length hCounts) grid)
-                 printPuzzle (setEmptyFields puzzle 5 5) 5 stdout
+                 printUpperTab vCounts 5 stdout
+                 printPuzzle (setGasFields puzzle 5 5) hCounts 5 stdout
                  --printPuzzle puzzle 5 stdout
                  --print (getColumn (convertInput (length vCounts) (length hCounts) grid) 5 5)
                  --printPuzzle (setGasFields (setEmptyFields puzzle 5 5) 5 5) 5 stdout
