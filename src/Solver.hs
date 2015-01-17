@@ -9,7 +9,7 @@ setEmptyFields :: Puzzle -> Int -> Int -> Puzzle
 setEmptyFields puzzle 0 0 = puzzle
 setEmptyFields (Puzzle leftTab upperTab fields) x y =
     let
-        nx = if x == 0 then length upperTab else x -1
+        nx = if x == 0 then ((length upperTab) -1) else x -1
         ny = if x == 0 then y - 1 else y
     in
     if
@@ -52,7 +52,7 @@ setGasFields (Puzzle leftTab upperTab fields) x y =
         dir = checkAdjecentQuad (Puzzle leftTab upperTab fields) x y House
     in
     if
-        (fields!!y!!x == Unknown) &&
+        --(fields!!y!!x == Unknown) &&
         (dir /= NotFound) &&
         (dir /= MultipleFound) &&
         (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasUp) &&
@@ -135,7 +135,7 @@ solve :: Puzzle -> Int -> Int -> Puzzle
 solve (Puzzle leftTab upperTab fields) 0 0 = (Puzzle leftTab upperTab fields)
 solve (Puzzle leftTab upperTab fields) x y =
     let
-        nx = if x == 0 then length upperTab else x -1
+        nx = if x == 0 then ((length upperTab) - 1) else x -1
         ny = if x == 0 then y - 1 else y
     in
     if
@@ -146,7 +146,7 @@ solve (Puzzle leftTab upperTab fields) x y =
         then
             solve (setGasFields (Puzzle leftTab upperTab fields) x y) nx ny
         else
-            (Puzzle leftTab upperTab fields)
+             setEmptyFields (Puzzle leftTab upperTab fields) x y
     else
         if not (checkPuzzleSolved (Puzzle leftTab upperTab fields) 5)
         then
