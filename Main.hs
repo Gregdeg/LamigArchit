@@ -22,6 +22,6 @@ main = do
                  --printPuzzle puzzle 5 stdout
                  --print (getColumn (convertInput (length vCounts) (length hCounts) grid) 5 5)
                  --printPuzzle (setGasFields (setEmptyFields puzzle 5 5) 5 5) 5 stdout
-                 --printPuzzle (puzzle) 5  stdout
-                 printAll(solve puzzle 5 5) 5  stdout
+                 --printAll (puzzle) 5  stdout
+                 printAll (solve puzzle 5 5) 5 stdout
                  --printAllToFile (puzzle) 5  "result2.txt"

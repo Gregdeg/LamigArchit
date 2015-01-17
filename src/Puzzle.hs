@@ -60,7 +60,7 @@ setAdjacentField (Puzzle leftTab upperTab fields) x y dir field =
             [(
                 (take (x+1) (fields!!y))++
                 [field]++
-                (drop (x+2) (fields!!y))
+                (drop (x+1) (fields!!y))
             )]++
             (drop (y+1) fields))
             )
@@ -80,7 +80,7 @@ setAdjacentField (Puzzle leftTab upperTab fields) x y dir field =
                 [field]++
                 (drop (x+1) (fields!!y))
             )]++
-            (drop (y+2) fields))
+            (drop (y+1) fields))
             )
 
 --Sprawdza, czy w polach krzyżowo przyległych do danego jest podany w parametrze typ pola
@@ -96,7 +96,7 @@ checkAdjecentQuad (Puzzle leftTab upperTab fields) x y field =
     in
     case trues of
         0 -> NotFound
-        1 -> if dirs!!0 then Down else if dirs!!1 then Up else if dirs!!2 then Puzzle.Left else Puzzle.Right
+        1 -> if dirs!!0 then Up else if dirs!!1 then Down else if dirs!!2 then Puzzle.Right else Puzzle.Left
         _ -> MultipleFound
 
 --Sprawdza, czy we wszystkich polach przyległych do danego jest podany w parametrze typ pola

@@ -6,7 +6,33 @@ import Puzzle
 
 --Wstawia znacznik pola, które pozostanie puste
 setEmptyFields :: Puzzle -> Int -> Int -> Puzzle
-setEmptyFields puzzle 0 0 = puzzle
+setEmptyFields (Puzzle leftTab upperTab fields) 0 0 =  
+
+    if
+        (fields!!0!!0 == Unknown) && (
+                        (checkAdjecentQuad (Puzzle leftTab upperTab fields) 0 0 House) == NotFound  ||
+                        checkRowCompletness (fields!!0) (leftTab!!0) ||
+                        checkRowCompletness (getColumn fields 5 0) (upperTab!!0)
+                        )
+    then
+
+            (Puzzle
+            leftTab
+            upperTab
+            (
+                (take 0 fields)++
+                [(
+                    (take 0 (fields!!1))++
+                    [Empty]++
+                    (drop (1) (fields!!1))
+                )]++
+                (drop (1) fields)
+            ))
+    else
+            (Puzzle
+            leftTab
+            upperTab
+            fields)
 setEmptyFields (Puzzle leftTab upperTab fields) x y =
     let
         nx = if x == 0 then ((length upperTab) -1) else x -1
@@ -52,7 +78,7 @@ setGasFields (Puzzle leftTab upperTab fields) x y =
         dir = checkAdjecentQuad (Puzzle leftTab upperTab fields) x y House
     in
     if
-        --(fields!!x!!y == Unknown) &&
+        (fields!!x!!y == Unknown) &&
         (dir /= NotFound) &&
         (dir /= MultipleFound) &&
         (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasUp) &&
@@ -87,9 +113,9 @@ setGasFields (Puzzle leftTab upperTab fields) x y =
 --cleanPuzzle :: Puzzle -> Int -> Int -> Puzzle
 --cleanPuzzle (Puzzle leftTab upperTab fields) x y = cleanPuzzle
 
---Sprawdza, czy w danych wierszu ilość zbiorników zgadza się z docelową, oraz, czy jest równa pustym
+--Sprawdza, czy w danych wierszu ilość zbiorników zgadza się z docelową
 checkRowCompletness :: [Field] -> Int -> Bool
-checkRowCompletness _ 0 = True
+checkRowCompletness (xs) 0 = True
 checkRowCompletness [] _ = False
 checkRowCompletness (x:xs) c =
     if x == GasUp ||
@@ -101,20 +127,21 @@ checkRowCompletness (x:xs) c =
        else
         checkRowCompletness (xs) c
 
+--Sprawdza, czy w danym wierszu ilość pól pustych jest równa indeksowi
 checkRowReady :: [Field] -> Int -> Bool
 checkRowReady _ 0 = True
 checkRowReady [] _ = False
 checkRowReady (x:xs) c =
     if x == Empty
        then
-        checkRowCompletness (xs) (c-1)
+        checkRowReady (xs) (c-1)
        else
-        checkRowCompletness (xs) c
+        checkRowReady (xs) c
 
 checkPuzzleSolved :: Puzzle -> Int -> Bool
 checkPuzzleSolved _ 0 = True
 checkPuzzleSolved (Puzzle leftTab upperTab puzzle) i = if
-        checkRowCompletness (puzzle!!i) (length leftTab)
+        checkRowCompletness (puzzle!!i) (leftTab!!i)
     then checkPuzzleSolved (Puzzle leftTab upperTab puzzle) (i-1)
     else False
 
@@ -132,21 +159,22 @@ getColumn fields x y = getColumn fields (x-1) y++[fields!!x!!y]
         --(Puzzle leftTab upperTab fields)
 
 solve :: Puzzle -> Int -> Int -> Puzzle
-solve (Puzzle leftTab upperTab fields) 0 0 = (Puzzle leftTab upperTab fields)
+solve (Puzzle leftTab upperTab fields) 0 0 = solve (Puzzle leftTab upperTab fields) ((length leftTab) - 1) ((length upperTab) - 1)
 solve (Puzzle leftTab upperTab fields) x y =
     let
         nx = if x == 0 then ((length upperTab) - 1) else x -1
         ny = if x == 0 then y - 1 else y
     in
     if
-    (checkRowReady (fields!!y) (leftTab!!y) ||
-    checkRowReady (getColumn fields 5 x) (upperTab!!x))
+    ((leftTab!!y /= 0) && (checkRowReady (fields!!y) (leftTab!!y)) ||
+    ((upperTab!!x /= 0)  &&  (checkRowReady (getColumn fields 5 x) (upperTab!!x))
+    ))
     then
         if not (checkPuzzleSolved (Puzzle leftTab upperTab fields) 5)
         then
             solve (setGasFields (Puzzle leftTab upperTab fields) x y) nx ny
         else
-             setEmptyFields (Puzzle leftTab upperTab fields) x y
+            setEmptyFields (Puzzle leftTab upperTab fields) x y
     else
         if not (checkPuzzleSolved (Puzzle leftTab upperTab fields) 5)
         then
