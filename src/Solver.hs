@@ -52,7 +52,7 @@ setGasFields (Puzzle leftTab upperTab fields) x y =
         dir = checkAdjecentQuad (Puzzle leftTab upperTab fields) x y House
     in
     if
-        --(fields!!y!!x == Unknown) &&
+        --(fields!!x!!y == Unknown) &&
         (dir /= NotFound) &&
         (dir /= MultipleFound) &&
         (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasUp) &&
@@ -62,8 +62,8 @@ setGasFields (Puzzle leftTab upperTab fields) x y =
     then
             (setAdjacentField
                 (Puzzle
-                    ((take y leftTab)++[leftTab!!y-1]++(drop (y+1) leftTab)) --y+1
-                    ((take x upperTab)++[upperTab!!x-1]++(drop (x+1) upperTab)) -- x+1
+                    leftTab --((take y leftTab) ++ [leftTab!!y-1] ++ (drop (y+1) leftTab)) --y+1
+                    upperTab --((take x upperTab) ++ [upperTab!!x-1] ++ (drop (x+1) upperTab)) -- x+1
                     (
                         (take y fields)++
                         [(
