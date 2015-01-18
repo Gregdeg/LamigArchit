@@ -137,14 +137,13 @@ getColumn fields x y = getColumn fields x (y-1)++[fields!!y!!x]
     --else
         --(Puzzle leftTab upperTab fields)
 
-solve :: Puzzle -> Int -> Int -> IO Puzzle
+solve :: Puzzle -> Int -> Int -> IO ()
 solve (Puzzle leftTab upperTab fields) _ (-1) = do
+	printAll (Puzzle leftTab upperTab fields) 5 stdout
+	getLine
 	if checkPuzzleSolved (Puzzle leftTab upperTab fields) 5 then
-		return (Puzzle leftTab upperTab fields)
+		putStrLn "\n\nSolved!"
 	else
-		do
-		printAll (Puzzle leftTab upperTab fields) 5 stdout
-		getLine
 		solve (Puzzle leftTab upperTab fields) 5 5
 {-
     let
