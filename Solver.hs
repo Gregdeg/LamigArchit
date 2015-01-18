@@ -215,7 +215,7 @@ solve (Puzzle leftTab upperTab fields) x y =
     --error "dawai"
     ((upperTab!!x /= 0) && (leftTab!!y /= 0)) && 
     (((checkRowReady (fields!!y) (leftTab!!y))) ||
-    ((checkRowReady (getColumn fields 5 x) (upperTab!!x))))
+    ((checkRowReady (getColumn fields x 5) (upperTab!!x))))
     then
             solve (setGasFields (Puzzle leftTab upperTab fields) x y) nx ny
     else
