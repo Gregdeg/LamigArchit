@@ -162,8 +162,8 @@ checkPuzzleSolved (Puzzle leftTab upperTab puzzle) i = if
 
 --bierze kolumnę indeksując od 0
 getColumn :: [[Field]] -> Int -> Int-> [Field]
-getColumn _ (-1) _ = []
-getColumn fields x y = [fields!!y!!x] ++ getColumn fields (x-1) y
+getColumn _ _ (-1) = []
+getColumn fields x y = getColumn fields x (y-1)++[fields!!y!!x]
 
 -- funkcja rozwiazujaca lamiglowke
 -- iteracyjnie wykresla pola i ustawia zbiorniki, az tablice gorna i lewa sie nie wyzeruja
