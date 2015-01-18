@@ -95,13 +95,10 @@ setGasFields (Puzzle leftTab upperTab fields) x y =
 
 --Sprawdza, czy w danych wierszu ilość zbiorników zgadza się z docelową
 checkRowCompletness :: [Field] -> Int -> Bool
-checkRowCompletness _ 0 = True --TODO
+checkRowCompletness [] 0 = True
 checkRowCompletness [] _ = False
 checkRowCompletness (x:xs) c =
-    if x == GasUp ||
-       x == GasRight ||
-       x == GasBottom ||
-       x == GasLeft
+    if elem x [Gas, GasUp, GasBottom, GasLeft, GasRight]
        then
         checkRowCompletness (xs) (c-1)
        else
