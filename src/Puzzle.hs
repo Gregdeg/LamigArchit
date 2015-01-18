@@ -4,7 +4,7 @@ import System.IO
 --import Data.Sequence
 --cokolwiek
 --Typ reprezentujący pole łamigłówki - nieznane, puste, domek i cztery kierunki zbiorników
-data Field = Unknown | Empty | House | GasHouse | GasUp | GasRight | GasBottom | GasLeft deriving Eq
+data Field = Unknown | Empty | House | GasHouse | Gas| GasUp | GasRight | GasBottom | GasLeft deriving Eq
 
 instance Show Field where
     show f=case f of
@@ -16,6 +16,7 @@ instance Show Field where
         GasRight -> "r"
         GasBottom -> "b"
         GasLeft -> "l"
+        Gas -> "g"
 
 data Puzzle = Puzzle [Int] [Int] [[Field]]
 data Dirs = Up | Right | Down | Left | NotFound | MultipleFound deriving Eq
@@ -82,6 +83,10 @@ setAdjacentField (Puzzle leftTab upperTab fields) x y dir field =
             )]++
             (drop (y+1) fields))
             )
+        _ -> (Puzzle leftTab upperTab fields)
+            
+            
+            
 
 --Sprawdza, czy w polach krzyżowo przyległych do danego jest podany w parametrze typ pola
 checkAdjecentQuad :: Puzzle -> Int -> Int -> Field -> Dirs
@@ -92,11 +97,12 @@ checkAdjecentQuad (Puzzle leftTab upperTab fields) x y field =
                 ++ [(y < ((length upperTab) -1) && fields!!(y+1)!!x == field)]
                 ++ [(x > 0 && fields!!y!!(x-1) == field)]
                 ++ [(x < ((length leftTab) -1 ) && fields!!y!!(x+1) == field)]
-        trues = length$filter (==True) dirs
+        trues =  length$filter (==True) dirs
     in
     case trues of
         0 -> NotFound
         1 -> if dirs!!0 then Up else if dirs!!1 then Down else if dirs!!2 then Puzzle.Right else Puzzle.Left
+        --_ -> Up
         _ -> MultipleFound
 
 --Sprawdza, czy we wszystkich polach przyległych do danego jest podany w parametrze typ pola
