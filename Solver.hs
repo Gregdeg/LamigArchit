@@ -174,7 +174,11 @@ getColumn fields x y = getColumn fields x (y-1)++[fields!!y!!x]
         --(Puzzle leftTab upperTab fields)
 
 solve :: Puzzle -> Int -> Int -> Puzzle
-solve (Puzzle leftTab upperTab fields) 0 0 = (Puzzle leftTab upperTab fields)
+solve (Puzzle leftTab upperTab fields) _ (-1) = 
+	if checkPuzzleSolved (Puzzle leftTab upperTab fields) 5 then
+		(Puzzle leftTab upperTab fields)
+	else
+		solve (Puzzle leftTab upperTab fields) 5 5
 {-
     let
         nx = (length upperTab) - 1
@@ -203,13 +207,7 @@ solve (Puzzle leftTab upperTab fields) x y =
         ny = if x == 0 then y - 1 else y
     in
     if 
-        (not (checkPuzzleSolved (Puzzle leftTab upperTab fields) 5)) &&
-        (fields!!y!!x /= House) &&
-        (fields!!y!!x /= GasHouse) &&
-        (fields!!y!!x /= GasUp) &&
-        (fields!!y!!x /= GasBottom) &&
-        (fields!!y!!x /= GasLeft) &&
-        (fields!!y!!x /= GasRight)
+        elem (fields!!y!!x) [Unknown,Gas]
     then
     if
     --error "dawai"
