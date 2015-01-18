@@ -144,10 +144,10 @@ checkRowCompletness (x:xs) c =
 
 --Sprawdza, czy w danym wierszu ilość pól pustych jest równa indeksowi
 checkRowReady :: [Field] -> Int -> Bool
-checkRowReady _ 0 = True
+checkRowReady [] 0 = True
 checkRowReady [] _ = False
 checkRowReady (x:xs) c =
-    if x == Empty || x == Gas
+    if elem x [Unknown, Gas, GasBottom, GasLeft, GasRight, GasUp]
        then
         checkRowReady (xs) (c-1)
        else
