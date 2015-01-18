@@ -6,42 +6,8 @@ import Puzzle
 
 --Wstawia znacznik pola, które pozostanie puste
 setEmptyFields :: Puzzle -> Int -> Int -> Puzzle
-setEmptyFields (Puzzle leftTab upperTab fields) 0 0 =
-    let
-        x = 0
-        y = 0
-    in
-    if
-        fields!!0!!0 == Unknown && (
-                        (checkAdjecentQuad (Puzzle leftTab upperTab fields) x y House) == NotFound  ||
-                        (checkAdjecentQuad (Puzzle leftTab upperTab fields) x y GasHouse) /= NotFound ||
-                        not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasUp) ||
-                        not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasRight) ||
-                        not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasLeft) ||
-                        not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasBottom) ||
-                        not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y Gas) ||
-                        checkRowCompletness (fields!!y) (leftTab!!y) ||
-                        checkRowCompletness (getColumn fields 5 x) (upperTab!!x)
-                        )
-    then
-
-            (Puzzle
-            leftTab
-            upperTab
-            (
-                (take 0 fields)++
-                [(
-                    (take 0 (fields!!0))++
-                    [Empty]++
-                    (drop (1) (fields!!0))
-                )]++
-                (drop (1) fields)
-            ))
-    else
-            (Puzzle
-            leftTab
-            upperTab
-            fields)
+setEmptyFields (Puzzle leftTab upperTab fields) _ (-1) =
+	Puzzle leftTab upperTab fields
 setEmptyFields (Puzzle leftTab upperTab fields) x y =
     let
         nx = if x == 0 then ((length upperTab) -1) else x -1
@@ -49,16 +15,16 @@ setEmptyFields (Puzzle leftTab upperTab fields) x y =
     in
     if
         (fields!!y!!x == Unknown && (
-                        (checkAdjecentQuad (Puzzle leftTab upperTab fields) x y House) == NotFound  ||
-                        (checkAdjecentQuad (Puzzle leftTab upperTab fields) x y GasHouse) /= NotFound ||
-                        not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasUp) ||
-                        not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasRight) ||
-                        not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasLeft) ||
-                        not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasBottom) ||
-                        not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y Gas) ||
-                        checkRowCompletness (fields!!y) (leftTab!!y) ||
-                        checkRowCompletness (getColumn fields 5 x) (upperTab!!x)
-                        ))
+        (checkAdjecentQuad (Puzzle leftTab upperTab fields) x y House) == NotFound  ||
+        (checkAdjecentQuad (Puzzle leftTab upperTab fields) x y GasHouse) /= NotFound ||
+        not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasUp) ||
+        not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasRight) ||
+        not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasLeft) ||
+        not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasBottom) ||
+        not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y Gas) ||
+        checkRowCompletness (fields!!y) (leftTab!!y) ||
+        checkRowCompletness (getColumn fields x 5) (upperTab!!x)
+        ))
     then
         setEmptyFields
             (Puzzle
