@@ -202,15 +202,23 @@ solve (Puzzle leftTab upperTab fields) x y =
         nx = if x == 0 then ((length upperTab) - 1) else x -1
         ny = if x == 0 then y - 1 else y
     in
-    if not (checkPuzzleSolved (Puzzle leftTab upperTab fields) 5)
+    if 
+        (not (checkPuzzleSolved (Puzzle leftTab upperTab fields) 5)) &&
+        (fields!!y!!x /= House) &&
+        (fields!!y!!x /= GasHouse) &&
+        (fields!!y!!x /= GasUp) &&
+        (fields!!y!!x /= GasBottom) &&
+        (fields!!y!!x /= GasLeft) &&
+        (fields!!y!!x /= GasRight)
     then
     if
-    ((upperTab!!x /= 0) && (leftTab!!y /= 0)) &&
+    error "dawai"
+    ((upperTab!!x /= 0) && (leftTab!!y /= 0)) && 
     (((checkRowReady (fields!!y) (leftTab!!y))) ||
     ((checkRowReady (getColumn fields 6 x) (upperTab!!x))))
     then
             solve (setGasFields (Puzzle leftTab upperTab fields) x y) nx ny
     else
-            solve (setEmptyFields (Puzzle leftTab upperTab fields) x y) nx ny
+            solve (setEmptyFields (Puzzle leftTab upperTab fields) (length leftTab -1) (length upperTab -1)) nx ny
     else
-        setEmptyFields (Puzzle leftTab upperTab fields) x y
+            setEmptyFields (Puzzle leftTab upperTab fields) x y
