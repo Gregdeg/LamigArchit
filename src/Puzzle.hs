@@ -101,7 +101,7 @@ checkAdjecentQuad (Puzzle leftTab upperTab fields) x y field =
     in
     case trues of
         0 -> NotFound
-        1 -> if dirs!!0 then Up else if dirs!!1 then Down else if dirs!!2 then Puzzle.Right else Puzzle.Left
+        1 -> if dirs!!0 then Down else if dirs!!1 then Up else if dirs!!2 then Puzzle.Left else Puzzle.Right
         --_ -> Up
         _ -> MultipleFound
 

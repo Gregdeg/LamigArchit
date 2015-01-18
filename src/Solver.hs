@@ -93,7 +93,7 @@ setGasFields (Puzzle leftTab upperTab fields) x y =
         dir = checkAdjecentQuad (Puzzle leftTab upperTab fields) x y House
     in
     if
-        (fields!!y!!x == Empty || fields!!y!!x == Gas) &&
+        (fields!!y!!x == Unknown || fields!!y!!x == Gas) &&
         (dir /= NotFound) &&
         --(dir /= MultipleFound) &&
         (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasUp) &&
@@ -102,6 +102,7 @@ setGasFields (Puzzle leftTab upperTab fields) x y =
         (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasBottom) &&
         (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y Gas)
     then
+    --error "setGas"
             (setAdjacentField
                 (Puzzle
                     leftTab --((take y leftTab) ++ [leftTab!!y-1] ++ (drop (y+1) leftTab)) --y+1
@@ -181,43 +182,35 @@ solve (Puzzle leftTab upperTab fields) 0 0 = (Puzzle leftTab upperTab fields)
         y = 0
         x = 0
     in
-    if
-    ((leftTab!!y /= 0) && (checkRowReady (fields!!y) (leftTab!!y)) ||
-    ((upperTab!!x /= 0)  &&  (checkRowReady (getColumn fields 5 x) (upperTab!!x))
-    ))
+      if not (checkPuzzleSolved (Puzzle leftTab upperTab fields) 5)
     then
-        if not (checkPuzzleSolved (Puzzle leftTab upperTab fields) 5)
-        then
+    if
+    ((upperTab!!x /= 0) && (leftTab!!y /= 0)) &&
+    (((checkRowReady (fields!!y) (leftTab!!y))) ||
+    ((checkRowReady (getColumn fields 6 x) (upperTab!!x))))
+    then
             solve (setGasFields (Puzzle leftTab upperTab fields) x y) nx ny
-        else
-            setEmptyFields (Puzzle leftTab upperTab fields) x y
     else
-        if not (checkPuzzleSolved (Puzzle leftTab upperTab fields) 5)
-        then
             solve (setEmptyFields (Puzzle leftTab upperTab fields) x y) nx ny
-        else
-            setEmptyFields (Puzzle leftTab upperTab fields) x y
+    else
+        setEmptyFields (Puzzle leftTab upperTab fields) x y
 -}
 --Głowna funkcja aplikacji
-solve (Puzzle leftTab upperTab fields) x y =
-    
+solve (Puzzle leftTab upperTab fields) x y = 
+
     let
         nx = if x == 0 then ((length upperTab) - 1) else x -1
         ny = if x == 0 then y - 1 else y
     in
-    if
-    (fields!!y!!x == Empty || fields!!y!!x == Gas) &&
-    (((leftTab!!y /= 0) && (checkRowReady (fields!!y) (leftTab!!y))) ||
-    ((upperTab!!x /= 0)  &&  (checkRowReady (getColumn fields 6 x) (upperTab!!x))))
+    if not (checkPuzzleSolved (Puzzle leftTab upperTab fields) 5)
     then
-        if not (checkPuzzleSolved (Puzzle leftTab upperTab fields) 5)
-        then
+    if
+    ((upperTab!!x /= 0) && (leftTab!!y /= 0)) &&
+    (((checkRowReady (fields!!y) (leftTab!!y))) ||
+    ((checkRowReady (getColumn fields 6 x) (upperTab!!x))))
+    then
             solve (setGasFields (Puzzle leftTab upperTab fields) x y) nx ny
-        else
-            setEmptyFields (Puzzle leftTab upperTab fields) x y
     else
-        if not (checkPuzzleSolved (Puzzle leftTab upperTab fields) 5)
-        then
             solve (setEmptyFields (Puzzle leftTab upperTab fields) x y) nx ny
-        else
-            setEmptyFields (Puzzle leftTab upperTab fields) x y
+    else
+        setEmptyFields (Puzzle leftTab upperTab fields) x y
