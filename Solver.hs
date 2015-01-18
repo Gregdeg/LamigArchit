@@ -1,6 +1,8 @@
 module Solver where
 
 import Puzzle
+import Printer
+import System.IO
 
 --solvePuzzle :: Puzzle -> Puzzle
 
@@ -135,11 +137,14 @@ getColumn fields x y = getColumn fields x (y-1)++[fields!!y!!x]
     --else
         --(Puzzle leftTab upperTab fields)
 
-solve :: Puzzle -> Int -> Int -> Puzzle
-solve (Puzzle leftTab upperTab fields) _ (-1) = 
+solve :: Puzzle -> Int -> Int -> IO Puzzle
+solve (Puzzle leftTab upperTab fields) _ (-1) = do
 	if checkPuzzleSolved (Puzzle leftTab upperTab fields) 5 then
-		(Puzzle leftTab upperTab fields)
+		return (Puzzle leftTab upperTab fields)
 	else
+		do
+		printAll (Puzzle leftTab upperTab fields) 5 stdout
+		getLine
 		solve (Puzzle leftTab upperTab fields) 5 5
 {-
     let
