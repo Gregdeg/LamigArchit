@@ -87,7 +87,6 @@ setEmptyFields (Puzzle leftTab upperTab fields) x y =
 
 -- Stawia zbiorniki z gazem
 setGasFields :: Puzzle -> Int -> Int -> Puzzle
-setGasFields puzzle (-1) (-1) = puzzle
 setGasFields (Puzzle leftTab upperTab fields) x y =
     let
         dir = checkAdjecentQuad (Puzzle leftTab upperTab fields) x y House
