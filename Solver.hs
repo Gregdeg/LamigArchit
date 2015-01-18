@@ -154,7 +154,7 @@ checkRowReady (x:xs) c =
         checkRowReady (xs) c
 
 checkPuzzleSolved :: Puzzle -> Int -> Bool
-checkPuzzleSolved _ 0 = True
+checkPuzzleSolved _ (-1) = True
 checkPuzzleSolved (Puzzle leftTab upperTab puzzle) i = if
         checkRowCompletness (puzzle!!i) (leftTab!!i)
     then checkPuzzleSolved (Puzzle leftTab upperTab puzzle) (i-1)
