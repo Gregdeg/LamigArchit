@@ -16,7 +16,7 @@ setEmptyFields (Puzzle leftTab upperTab fields) x y =
     if
         (fields!!y!!x == Unknown && (
         (checkAdjecentQuad (Puzzle leftTab upperTab fields) x y House) == NotFound  ||
-        (checkAdjecentQuad (Puzzle leftTab upperTab fields) x y GasHouse) /= NotFound ||
+        --(checkAdjecentQuad (Puzzle leftTab upperTab fields) x y GasHouse) /= NotFound ||
         not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasUp) ||
         not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasRight) ||
         not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasLeft) ||
