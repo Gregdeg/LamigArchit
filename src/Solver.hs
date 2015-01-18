@@ -12,7 +12,7 @@ setEmptyFields (Puzzle leftTab upperTab fields) 0 0 =
         y = 0
     in
     if
-        (fields!!0!!0 == Unknown) && (
+        fields!!0!!0 == Unknown && (
                         (checkAdjecentQuad (Puzzle leftTab upperTab fields) x y House) == NotFound  ||
                         (checkAdjecentQuad (Puzzle leftTab upperTab fields) x y GasHouse) /= NotFound ||
                         not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasUp) ||
@@ -48,7 +48,7 @@ setEmptyFields (Puzzle leftTab upperTab fields) x y =
         ny = if x == 0 then y - 1 else y
     in
     if
-        ((fields!!y!!x == Unknown) && (
+        (fields!!y!!x == Unknown && (
                         (checkAdjecentQuad (Puzzle leftTab upperTab fields) x y House) == NotFound  ||
                         (checkAdjecentQuad (Puzzle leftTab upperTab fields) x y GasHouse) /= NotFound ||
                         not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasUp) ||
@@ -212,13 +212,13 @@ solve (Puzzle leftTab upperTab fields) x y =
         (fields!!y!!x /= GasRight)
     then
     if
-    error "dawai"
+    --error "dawai"
     ((upperTab!!x /= 0) && (leftTab!!y /= 0)) && 
     (((checkRowReady (fields!!y) (leftTab!!y))) ||
-    ((checkRowReady (getColumn fields 6 x) (upperTab!!x))))
+    ((checkRowReady (getColumn fields 5 x) (upperTab!!x))))
     then
             solve (setGasFields (Puzzle leftTab upperTab fields) x y) nx ny
     else
             solve (setEmptyFields (Puzzle leftTab upperTab fields) (length leftTab -1) (length upperTab -1)) nx ny
     else
-            setEmptyFields (Puzzle leftTab upperTab fields) x y
+            solve (Puzzle leftTab upperTab fields) nx ny

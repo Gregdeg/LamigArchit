@@ -46,7 +46,7 @@ convertToRow indices count = if elem count indices  then convertToRow indices (c
 -- ustawia sasiednie pole na okreslony typ
 setAdjacentField :: Puzzle -> Int -> Int -> Dirs -> Field -> Puzzle
 setAdjacentField (Puzzle leftTab upperTab fields) x y dir field =
-    case dir of
+    case dir of     
         Puzzle.Left -> (Puzzle leftTab upperTab (
             (take y fields)++
             [(
@@ -61,7 +61,7 @@ setAdjacentField (Puzzle leftTab upperTab fields) x y dir field =
             [(
                 (take (x+1) (fields!!y))++
                 [field]++
-                (drop (x+1) (fields!!y))
+                (drop (x+2) (fields!!y))
             )]++
             (drop (y+1) fields))
             )
@@ -81,8 +81,8 @@ setAdjacentField (Puzzle leftTab upperTab fields) x y dir field =
                 [field]++
                 (drop (x+1) (fields!!y))
             )]++
-            (drop (y+1) fields))
-            )
+            (drop (y+2) fields))
+            ) 
         _ -> (Puzzle leftTab upperTab fields)
             
             
@@ -101,7 +101,7 @@ checkAdjecentQuad (Puzzle leftTab upperTab fields) x y field =
     in
     case trues of
         0 -> NotFound
-        1 -> if dirs!!0 then Down else if dirs!!1 then Up else if dirs!!2 then Puzzle.Left else Puzzle.Right
+        1 -> if dirs!!0 then Up else if dirs!!1 then Down else if dirs!!2 then Puzzle.Left else Puzzle.Right
         --_ -> Up
         _ -> MultipleFound
 
