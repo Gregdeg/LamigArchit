@@ -14,14 +14,14 @@ setEmptyFields (Puzzle leftTab upperTab fields) x y =
     in
     if
         (fields!!y!!x == Unknown) && (((
-                        (checkAdjecentQuad (Puzzle leftTab upperTab fields) x y House) == NotFound  ||
+                        (checkAdjecentQuad (Puzzle leftTab upperTab fields) x y House) == NotFound ||
                         not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasUp) ||
                         not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasRight) ||
                         not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasLeft) ||
                         not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasBottom) ||
                         not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y Gas) ||
                         checkRowCompletness (fields!!y) (leftTab!!y) ||
-                        checkRowCompletness (getColumn fields 5 x) (upperTab!!x)
+                        checkRowCompletness (getColumn fields ((length leftTab)-1) x) (upperTab!!x)
                         )))
     then
         setEmptyFields
@@ -148,10 +148,10 @@ getColumn fields y x = [fields!!y!!x] ++ getColumn fields (y-1) x
 
 solve :: Puzzle -> Int -> Int -> Puzzle
 solve (Puzzle leftTab upperTab fields) _  (-1) =
-	if True then --checkPuzzleSolved (Puzzle leftTab upperTab fields) 5 then --TODO
+	if True then --checkPuzzleSolved (Puzzle leftTab upperTab fields) (length leftTab-1) then --TODO
 		(Puzzle leftTab upperTab fields)
 	else
-		solve (Puzzle leftTab upperTab fields) 5 5
+		solve (Puzzle leftTab upperTab fields) (length upperTab-1) (length leftTab-1)
 {-
     let
         nx = (length upperTab) - 1
@@ -159,7 +159,7 @@ solve (Puzzle leftTab upperTab fields) _  (-1) =
         y = 0
         x = 0
     in
-      if not (checkPuzzleSolved (Puzzle leftTab upperTab fields) 5)
+      if not (checkPuzzleSolved (Puzzle leftTab upperTab fields) (length leftTab-1))
     then
     if
     ((upperTab!!x /= 0) && (leftTab!!y /= 0)) &&
@@ -173,7 +173,7 @@ solve (Puzzle leftTab upperTab fields) _  (-1) =
         setEmptyFields (Puzzle leftTab upperTab fields) x y
 -}
 --Głowna funkcja aplikacji
-solve (Puzzle leftTab upperTab fields) x y =
+solve (Puzzle leftTab upperTab fields) x y = 
 
     let
         nx = if x == 0 then ((length upperTab) - 1) else x -1
@@ -181,14 +181,14 @@ solve (Puzzle leftTab upperTab fields) x y =
         gasField = houseNeedsGasTankHere (Puzzle leftTab upperTab fields) x y
     in
     if
-        (not (checkPuzzleSolved (Puzzle leftTab upperTab fields) 5)) &&
+        (not (checkPuzzleSolved (Puzzle leftTab upperTab fields) (length leftTab-1))) &&
         elem (fields!!y!!x) [Unknown,Gas]
     then
         if
             ((upperTab!!x /= 0) && (leftTab!!y /= 0)) &&
             (
                 (checkRowReady (fields!!2) (leftTab!!2)) ||
-                ((checkRowReady (getColumn fields 5 x) (upperTab!!x))) ||
+                ((checkRowReady (getColumn fields (length leftTab-1) x) (upperTab!!x))) ||
                 (gasField /= NotFound)
             )
         then

@@ -46,7 +46,7 @@ convertToRow indices count = if elem count indices  then convertToRow indices (c
 -- ustawia sasiednie pole na okreslony typ
 setAdjacentField :: Puzzle -> Int -> Int -> Dirs -> Field -> Puzzle
 setAdjacentField (Puzzle leftTab upperTab fields) x y dir field =
-    case dir of     
+    case dir of
         Puzzle.Left -> (Puzzle leftTab upperTab (
             (take y fields)++
             [(
@@ -94,9 +94,9 @@ checkAdjecentQuad _ (-1) _ _ = NotFound
 checkAdjecentQuad _ _ (-1) _ = NotFound
 checkAdjecentQuad (Puzzle leftTab upperTab fields) x y field =
     let dirs = [(y > 0  && fields!!(y-1)!!x == field)]
-                ++ [(y < ((length upperTab) -1) && fields!!(y+1)!!x == field)]
+                ++ [((y < ((length leftTab) -1)) && fields!!(y+1)!!x == field)]
                 ++ [(x > 0 && fields!!y!!(x-1) == field)]
-                ++ [(x < ((length leftTab) -1 ) && fields!!y!!(x+1) == field)]
+                ++ [((x < ((length upperTab) -1 )) && fields!!y!!(x+1) == field)]
         trues =  length$filter (==True) dirs
     in
     case trues of
@@ -110,13 +110,13 @@ checkAdjecentOcta :: Puzzle -> Int -> Int -> Field -> Bool
 checkAdjecentOcta (Puzzle leftTab upperTab fields) x y field =
     if
         (y > 0  && fields!!(y-1)!!x == field) || --S
-        (y < ((length upperTab) -1) && fields!!(y+1)!!x == field) || --N
+        (y < ((length leftTab) -1) && fields!!(y+1)!!x == field) || --N
         (x > 0 && fields!!y!!(x-1) == field) || --W
-        (x < ((length leftTab) -1) && fields!!y!!(x+1) == field) || --E
+        (x < ((length upperTab) -1) && fields!!y!!(x+1) == field) || --E
         (y > 0 && x > 0 && fields!!(y-1)!!(x-1) == field) || --SW
-        (y > 0 && x < (length leftTab) -1 &&  fields!!(y-1)!!(x+1) == field) || --SE
-        (x > 0 && y < (length upperTab) -1 && fields!!(y+1)!!(x-1) == field) || --NW
-        (x < (length leftTab) -1 && x < (length leftTab) -1 && fields!!(y+1)!!(x+1) == field) --NE
+        (y > 0 && x < ((length leftTab) -1) &&  fields!!(y-1)!!(x+1) == field) || --SE
+        (x > 0 && y < ((length leftTab) -1) && fields!!(y+1)!!(x-1) == field) || --NW
+        ((x < ((length upperTab) -1)) && ((y < ((length leftTab) -1))) && fields!!(y+1)!!(x+1) == field) --NE
     then False
     else True
 
