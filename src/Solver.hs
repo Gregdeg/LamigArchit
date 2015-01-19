@@ -12,7 +12,7 @@ setEmptyFields (Puzzle leftTab upperTab fields) 0 0 =
         y = 0
     in
     if
-        fields!!0!!0 == Unknown && (
+        ((fields!!0!!0 == Unknown &&) (
                         (checkAdjecentQuad (Puzzle leftTab upperTab fields) x y House) == NotFound  ||
                         (checkAdjecentQuad (Puzzle leftTab upperTab fields) x y GasHouse) /= NotFound ||
                         not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasUp) ||
@@ -22,7 +22,7 @@ setEmptyFields (Puzzle leftTab upperTab fields) 0 0 =
                         not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y Gas) ||
                         checkRowCompletness (fields!!y) (leftTab!!y) ||
                         checkRowCompletness (getColumn fields 5 x) (upperTab!!x)
-                        )
+                        ))
     then
 
             (Puzzle
@@ -144,14 +144,23 @@ checkRowCompletness (x:xs) c =
 
 --Sprawdza, czy w danym wierszu ilość pól pustych jest równa indeksowi
 checkRowReady :: [Field] -> Int -> Bool
-checkRowReady _ 0 = True
+--checkRowReady (xs) 0 = if ((length(filter (== Unknown) (xs))) > 0) then False else True
 checkRowReady [] _ = False
 checkRowReady (x:xs) c =
-    if x == Empty || x == Gas
+    if x == GasLeft ||
+       x == GasUp ||
+       x == GasBottom ||
+       x == GasRight
        then
         checkRowReady (xs) (c-1)
        else
-        checkRowReady (xs) c
+       if 
+            (length(filter (== Unknown) (xs))) == c
+            then
+            True
+            else
+            checkRowReady (xs) (c-1)
+            
 
 checkPuzzleSolved :: Puzzle -> Int -> Bool
 checkPuzzleSolved _ 0 = True
@@ -213,11 +222,11 @@ solve (Puzzle leftTab upperTab fields) x y =
     then
     if
     --error "dawai"
-    ((upperTab!!x /= 0) && (leftTab!!y /= 0)) && 
-    (((checkRowReady (fields!!y) (leftTab!!y))) ||
-    ((checkRowReady (getColumn fields 5 x) (upperTab!!x))))
+    ((upperTab!!x /= 0) && (leftTab!!y /= 0)) &&
+    (((checkRowReady (fields!!y) (leftTab!!y)))) ||
+    ((checkRowReady (getColumn fields 6 x) (upperTab!!x)))
     then
-            solve (setGasFields (Puzzle leftTab upperTab fields) x y) nx ny
+            solve (setGasFields (setEmptyFields (Puzzle leftTab upperTab fields) (length leftTab -1) (length upperTab -1)) x y) nx ny
     else
             solve (setEmptyFields (Puzzle leftTab upperTab fields) (length leftTab -1) (length upperTab -1)) nx ny
     else
