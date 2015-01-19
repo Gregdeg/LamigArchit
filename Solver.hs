@@ -57,17 +57,24 @@ setEmptyFields (Puzzle leftTab upperTab fields) x y =
 setGasFields :: Puzzle -> Int -> Int -> Puzzle
 setGasFields (Puzzle leftTab upperTab fields) x y =
     let
-        dir = checkAdjecentQuad (Puzzle leftTab upperTab fields) x y House
+		dir = checkAdjecentQuad (Puzzle leftTab upperTab fields) x y House
+		gasField = houseNeedsGasTankHere (Puzzle leftTab upperTab fields) x y
     in
     if
-        (fields!!y!!x == Unknown || fields!!y!!x == Gas) &&
+        elem (fields!!y!!x)  [Unknown, Gas] &&
         (dir /= NotFound) &&
         --(dir /= MultipleFound) &&
         (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasUp) &&
         (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasRight) &&
         (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasLeft) &&
         (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasBottom) &&
-        (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y Gas)
+        (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y Gas)&&
+		(
+			checkRowReady (fields!!y) (leftTab!!y) ||
+			checkRowReady
+				(getColumn fields x 5)
+				(upperTab!!x)	
+		)
     then
     --error "setGas"
             (setAdjacentField
@@ -89,8 +96,28 @@ setGasFields (Puzzle leftTab upperTab fields) x y =
                 dir
                 GasHouse
             )
-    else
-        (Puzzle leftTab upperTab fields)
+    else if length gasField>0 then
+		(setAdjacentField
+            (Puzzle
+                leftTab --((take y leftTab) ++ [leftTab!!y-1] ++ (drop (y+1) leftTab)) --y+1
+                upperTab --((take x upperTab) ++ [upperTab!!x-1] ++ (drop (x+1) upperTab)) -- x+1
+                (
+                    (take y fields)++
+                    [(
+                        (take x (fields!!y))++
+                        gasField++
+                        (drop (x+1) (fields!!y)) --x+1
+                    )]++
+                    (drop (y+1) fields) --y+1
+                    )
+                )
+                x
+                y
+                dir
+            GasHouse
+		)
+		else
+			(Puzzle leftTab upperTab fields)
 
 --cleanPuzzle :: Puzzle -> Int -> Int -> Puzzle
 --cleanPuzzle (Puzzle leftTab upperTab fields) x y = cleanPuzzle
@@ -117,6 +144,31 @@ checkRowReady (x:xs) c =
        else
         checkRowReady (xs) c
 
+houseHasOnlyOnePossiblePlaceForTank :: Int -> Int -> Puzzle -> Bool
+houseHasOnlyOnePossiblePlaceForTank x y (Puzzle leftTab upperTab puzzle)=
+	checkAdjecentQuad (Puzzle leftTab upperTab puzzle) x y Unknown /= NotFound &&
+	checkAdjecentQuad (Puzzle leftTab upperTab puzzle) x y Unknown /= MultipleFound &&
+	
+	checkAdjecentQuad (Puzzle leftTab upperTab puzzle) x y Gas == NotFound &&
+	checkAdjecentQuad (Puzzle leftTab upperTab puzzle) x y GasRight == NotFound &&
+	checkAdjecentQuad (Puzzle leftTab upperTab puzzle) x y GasUp == NotFound &&
+	checkAdjecentQuad (Puzzle leftTab upperTab puzzle) x y GasLeft == NotFound &&
+	checkAdjecentQuad (Puzzle leftTab upperTab puzzle) x y GasBottom == NotFound
+	
+		
+-- Sprawdza, czy istnieje domek, który musi mieć na danym polu swój zbiornik; jeśli tak, zwraca kierunek zbiornika
+houseNeedsGasTankHere :: Puzzle -> Int -> Int -> [Field]
+houseNeedsGasTankHere (Puzzle leftTab upperTab puzzle) x y=
+	--prawo
+	if x<length upperTab-1 && houseHasOnlyOnePossiblePlaceForTank (x+1) y (Puzzle leftTab upperTab puzzle) then [GasRight] else
+	--lewo
+	if x>0 && houseHasOnlyOnePossiblePlaceForTank (x-1) y (Puzzle leftTab upperTab puzzle) then [GasLeft] else
+	--dol
+	if y<length leftTab-1 && houseHasOnlyOnePossiblePlaceForTank x (y+1) (Puzzle leftTab upperTab puzzle) then [GasBottom] else
+	--gora
+	if y>0 && houseHasOnlyOnePossiblePlaceForTank x (y-1) (Puzzle leftTab upperTab puzzle) then [GasUp] else
+	[]
+		
 checkPuzzleSolved :: Puzzle -> Int -> Bool
 checkPuzzleSolved _ (-1) = True
 checkPuzzleSolved (Puzzle leftTab upperTab puzzle) i = if
@@ -175,14 +227,14 @@ solve (Puzzle leftTab upperTab fields) x y =
     if 
         elem (fields!!y!!x) [Unknown,Gas]
     then
-    if
-    --error "dawai"
-    ((upperTab!!x /= 0) && (leftTab!!y /= 0)) && 
-    (((checkRowReady (fields!!y) (leftTab!!y))) ||
-    ((checkRowReady (getColumn fields x 5) (upperTab!!x))))
-    then
-            solve (setGasFields (Puzzle leftTab upperTab fields) x y) nx ny
-    else
-            solve (setEmptyFields (Puzzle leftTab upperTab fields) (length leftTab -1) (length upperTab -1)) nx ny
+            solve 
+			(
+				setGasFields 
+					(setEmptyFields (Puzzle leftTab upperTab fields) (length leftTab -1) (length upperTab -1))
+					x 
+					y	
+			)
+			nx 
+			ny
     else
             solve (Puzzle leftTab upperTab fields) nx ny
