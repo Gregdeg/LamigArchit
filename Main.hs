@@ -26,8 +26,9 @@ main = do
                  --printAllToFile (puzzle) 5  "result2.txt"
                  --print (checkRowReady ([Empty,Gas,GasRight,House,Unknown,Empty]) 2)
                  --print (length (filter (\x -> x == Empty || x == Gas) ([Empty,Gas,GasRight,House,Unknown,Empty])))
-                 print (checkRowReady ([Empty,Empty,Unknown,Empty,Unknown,Empty]) (vCounts!!3))
-                 putStrLn "\n"
+                 --print (checkRowReady ([Empty,Empty,Unknown,Empty,Unknown,Empty]) (vCounts!!3))
+                 --putStrLn "\n"
                  --print (hCounts!!0)
                  --print (getColumn (fields) 5 0)
-                 printAll (((solve (setEmptyFields puzzle 5 5) 5 5))) 5 stdout
+                 print (fields!!1)
+                 --printAll (((solve (setEmptyFields puzzle 5 5) 5 5))) 5 stdout

@@ -127,15 +127,14 @@ checkRowReady :: [Field] -> Int -> Bool
 checkRowReady [] _ = False
 checkRowReady (xs) c =
     let
-        finalGases = length (filter (\x -> x == GasLeft || x == GasUp || x == GasUp || x == GasBottom) xs)
-        empties =  length (filter (\x -> x == Unknown || x == Gas) xs)
+        finalGases = length (filter (\x -> x == GasLeft || x == GasUp || x == GasUp || x == GasBottom) (xs))
+        empties =  length (filter (\x -> x == Unknown || x == Gas) (xs))
         cg = c - finalGases
     in
-    if cg == empties
-    then
-        True
-    else
-        False
+    if cg == empties then True else False
+    
+    --if c == 2 then error "2" else error "nie 2"
+
 
 
 
@@ -192,7 +191,7 @@ solve (Puzzle leftTab upperTab fields) x y =
         if
             ((upperTab!!x /= 0) && (leftTab!!y /= 0)) &&
             (
-            ((checkRowReady (fields!!y) (leftTab!!y))) ||
+            (checkRowReady (fields!!2) (leftTab!!2)) ||
             ((checkRowReady (getColumn fields 5 x) (upperTab!!x))) ||
             False --(gasField /= NotFound)
             )
