@@ -120,6 +120,17 @@ checkAdjecentOcta (Puzzle leftTab upperTab fields) x y field =
     then False
     else True
 
+houseHasOnlyOnePossiblePlaceForTank :: Int -> Int -> Puzzle -> Bool
+houseHasOnlyOnePossiblePlaceForTank x y (Puzzle leftTab upperTab puzzle)=
+	checkAdjecentQuad (Puzzle leftTab upperTab puzzle) x y Unknown /= NotFound &&
+	checkAdjecentQuad (Puzzle leftTab upperTab puzzle) x y Unknown /= MultipleFound &&
+	
+	checkAdjecentQuad (Puzzle leftTab upperTab puzzle) x y Gas == NotFound &&
+	checkAdjecentQuad (Puzzle leftTab upperTab puzzle) x y GasRight == NotFound &&
+	checkAdjecentQuad (Puzzle leftTab upperTab puzzle) x y GasUp == NotFound &&
+	checkAdjecentQuad (Puzzle leftTab upperTab puzzle) x y GasLeft == NotFound &&
+	checkAdjecentQuad (Puzzle leftTab upperTab puzzle) x y GasBottom == NotFound
+
 --cleanPuzzle :: Puzzle -> Int -> Int -> Puzzle
 --cleanPuzzle (Puzzle leftTab upperTab fields) x y = cleanPuzzle
 
