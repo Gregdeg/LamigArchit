@@ -35,8 +35,12 @@ main = do
                  --print (solvedPuzzle1Fields!!0!!2)
                  printAll (((solve (setEmptyFields puzzle (width-1) (height-1)) (width-1) (height-1)))) (height-1) stdout
                  --printAll (puzzle) 5 stdout
-                 --printAll solve(setEmptyFields puzzle (width-1) (height-1)) 5 stdout
+                 --printAll solve ((setEmptyFields puzzle (width-1) (height-1)) 5)  5 stdout
                  --print (fields!!5!!5)
+                 putStrLn "\n"
+                 --print (fields!!0)
+                 --print (checkRowReady ([Empty,Empty,GasLeft,Empty,Unknown,Empty]) 2)
+                 --print (getColumn())
 
 
 
