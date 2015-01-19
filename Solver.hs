@@ -104,8 +104,9 @@ checkRowCompletness (x:xs) c =
         checkRowCompletness (xs) (c-1)
        else
         checkRowCompletness (xs) c
--
+--[Empty,Empty,GasRight,House,Unknown,Empty]
 --Sprawdza, czy w danym wierszu ilość pól pustych jest równa indeksowi
+{-
 checkRowReady :: [Field] -> Int -> Bool
 checkRowReady [] _ = False
 checkRowReady (x:xs) c =
@@ -119,6 +120,21 @@ checkRowReady (x:xs) c =
             True
             else
             checkRowReady (xs) (c-1)
+-}
+
+checkRowReady :: [Field] -> Int -> Bool
+checkRowReady [] _ = False
+checkRowReady (xs) c =
+    let
+        finalGases = length (filter (\x -> x == GasLeft || x == GasUp || x == GasUp || x == GasBottom) xs)
+        empties =  length (filter (\x -> x == Unknown || x == Gas) xs)
+        cg = c - finalGases
+    in
+    if cg == empties
+    then
+        True
+    else
+        False
 
 
 checkPuzzleSolved :: Puzzle -> Int -> Bool
@@ -134,7 +150,7 @@ getColumn _ (-1) _ = []
 getColumn fields x y = [fields!!y!!x] ++ getColumn fields (x-1) y
 
 solve :: Puzzle -> Int -> Int -> Puzzle
-solve (Puzzle leftTab upperTab fields) _  (-1) = 
+solve (Puzzle leftTab upperTab fields) _  (-1) =
 	if True then --checkPuzzleSolved (Puzzle leftTab upperTab fields) 5 then --TODO
 		(Puzzle leftTab upperTab fields)
 	else
@@ -160,7 +176,7 @@ solve (Puzzle leftTab upperTab fields) _  (-1) =
         setEmptyFields (Puzzle leftTab upperTab fields) x y
 -}
 --Głowna funkcja aplikacji
-solve (Puzzle leftTab upperTab fields) x y = 
+solve (Puzzle leftTab upperTab fields) x y =
 
     let
         nx = if x == 0 then ((length upperTab) - 1) else x -1
