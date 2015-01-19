@@ -69,7 +69,6 @@ setGasFields (Puzzle leftTab upperTab fields) x y =
         (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y Gas)
         --elem True (map (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y) [GasRight, GasUp, GasLeft, GasBottom, Gas])
     then
-    --error "setGas"
             (setAdjacentField
                 (Puzzle
                     leftTab --((take y leftTab) ++ [leftTab!!y-1] ++ (drop (y+1) leftTab)) --y+1
@@ -92,50 +91,29 @@ setGasFields (Puzzle leftTab upperTab fields) x y =
     else
         (Puzzle leftTab upperTab fields)
 
---cleanPuzzle :: Puzzle -> Int -> Int -> Puzzle
---cleanPuzzle (Puzzle leftTab upperTab fields) x y = cleanPuzzle
 
 --Sprawdza, czy w danych wierszu ilość zbiorników zgadza się z docelową
 checkRowCompletness :: [Field] -> Int -> Bool
 checkRowCompletness _ (-1) = True --TODO
 checkRowCompletness [] _ = False
-checkRowCompletness (x:xs) c =
-    if elem x [GasUp, GasBottom, GasLeft, GasRight]
-       then
-        checkRowCompletness (xs) (c-1)
-       else
-        checkRowCompletness (xs) c
---[Empty,Empty,GasRight,House,Unknown,Empty]
---Sprawdza, czy w danym wierszu ilość pól pustych jest równa indeksowi
-{-
-checkRowReady :: [Field] -> Int -> Bool
-checkRowReady [] _ = False
-checkRowReady (x:xs) c =
-    if elem x [GasBottom, GasLeft, GasRight, GasUp]
-       then
-        checkRowReady (xs) (c-1)
-       else
-       if
-            (length(filter (== Unknown) (xs))) == c
-            then
-            True
-            else
-            checkRowReady (xs) (c-1)
--}
+checkRowCompletness (xs) c =
+    let
+        finalGases = length (filter (\x -> x == GasLeft || x == GasRight || x == GasUp || x == GasBottom) (xs))
+    in
+    if finalGases == c then True else False
 
 checkRowReady :: [Field] -> Int -> Bool
 checkRowReady [] _ = False
 checkRowReady (xs) c =
     let
-        finalGases = length (filter (\x -> x == GasLeft || x == GasUp || x == GasUp || x == GasBottom) (xs))
+        finalGases = length (filter (\x -> x == GasLeft || x == GasRight || x == GasUp || x == GasBottom) (xs))
         empties =  length (filter (\x -> x == Unknown || x == Gas) (xs))
         cg = c - finalGases
     in
     if cg == empties then True else False
-    
 
 checkPuzzleSolved :: Puzzle -> Int -> Bool
-checkPuzzleSolved _ (-1) = True
+checkPuzzleSolved _ (0) = True
 checkPuzzleSolved (Puzzle leftTab upperTab puzzle) i = if
         checkRowCompletness (puzzle!!i) (leftTab!!i)
     then checkPuzzleSolved (Puzzle leftTab upperTab puzzle) (i-1)
@@ -148,51 +126,31 @@ getColumn fields y x = [fields!!y!!x] ++ getColumn fields (y-1) x
 
 solve :: Puzzle -> Int -> Int -> Puzzle
 solve (Puzzle leftTab upperTab fields) _  (-1) =
-	if True then --checkPuzzleSolved (Puzzle leftTab upperTab fields) (length leftTab-1) then --TODO
+	if checkPuzzleSolved (Puzzle leftTab upperTab fields) (length leftTab-1) then --checkPuzzleSolved (Puzzle leftTab upperTab fields) (length leftTab-1) then --TODO
 		(Puzzle leftTab upperTab fields)
 	else
 		solve (Puzzle leftTab upperTab fields) (length upperTab-1) (length leftTab-1)
-{-
-    let
-        nx = (length upperTab) - 1
-        ny = (length leftTab) - 1
-        y = 0
-        x = 0
-    in
-      if not (checkPuzzleSolved (Puzzle leftTab upperTab fields) (length leftTab-1))
-    then
-    if
-    ((upperTab!!x /= 0) && (leftTab!!y /= 0)) &&
-    (((checkRowReady (fields!!y) (leftTab!!y))) ||
-    ((checkRowReady (getColumn fields 6 x) (upperTab!!x))))
-    then
-            solve (setGasFields (Puzzle leftTab upperTab fields) x y) nx ny
-    else
-            solve (setEmptyFields (Puzzle leftTab upperTab fields) x y) nx ny
-    else
-        setEmptyFields (Puzzle leftTab upperTab fields) x y
--}
---Głowna funkcja aplikacji
-solve (Puzzle leftTab upperTab fields) x y = 
 
+--Głowna funkcja aplikacji
+solve (Puzzle leftTab upperTab fields) x y =
     let
         nx = if x == 0 then ((length upperTab) - 1) else x -1
         ny = if x == 0 then y - 1 else y
         gasField = houseNeedsGasTankHere (Puzzle leftTab upperTab fields) x y
     in
     if
-        (not (checkPuzzleSolved (Puzzle leftTab upperTab fields) (length leftTab-1))) &&
+        (not (checkPuzzleSolved (Puzzle leftTab upperTab fields) ((length leftTab)-1))) &&
         elem (fields!!y!!x) [Unknown,Gas]
     then
         if
             ((upperTab!!x /= 0) && (leftTab!!y /= 0)) &&
             (
-                (checkRowReady (fields!!2) (leftTab!!2)) ||
-                ((checkRowReady (getColumn fields (length leftTab-1) x) (upperTab!!x)))
-                --(gasField /= NotFound)
+                (checkRowReady (fields!!y) (leftTab!!y)) ||
+                ((checkRowReady (getColumn fields ((length upperTab) -1) x) (upperTab!!x))) ||
+                (gasField /= NotFound)
             )
         then
-                solve (setGasFields (setEmptyFields (Puzzle leftTab upperTab fields) (length leftTab -1) (length upperTab -1)) x y) nx ny
+                solve (setGasFields (setEmptyFields (Puzzle leftTab upperTab fields) ((length leftTab) -1) ((length upperTab) -1)) x y) nx ny
         else
                 solve (setEmptyFields (Puzzle leftTab upperTab fields) (length leftTab -1) (length upperTab -1)) nx ny
     else

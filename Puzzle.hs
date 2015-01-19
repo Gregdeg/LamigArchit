@@ -101,7 +101,7 @@ checkAdjecentQuad (Puzzle leftTab upperTab fields) x y field =
     in
     case trues of
         0 -> NotFound
-        1 -> if dirs!!0 then Down else if dirs!!1 then Up else if dirs!!2 then Puzzle.Left else Puzzle.Right
+        1 -> if dirs!!0 then Up else if dirs!!1 then Down else if dirs!!2 then Puzzle.Right else Puzzle.Left
         --_ -> Up
         _ -> MultipleFound
 
@@ -120,16 +120,6 @@ checkAdjecentOcta (Puzzle leftTab upperTab fields) x y field =
     then False
     else True
 
-{-houseHasOnlyOnePossiblePlaceForTank :: Int -> Int -> Puzzle -> Bool
-houseHasOnlyOnePossiblePlaceForTank x y (Puzzle leftTab upperTab puzzle)=
-	checkAdjecentQuad (Puzzle leftTab upperTab puzzle) x y Unknown /= NotFound &&
-	checkAdjecentQuad (Puzzle leftTab upperTab puzzle) x y Unknown /= MultipleFound &&
-	checkAdjecentQuad (Puzzle leftTab upperTab puzzle) x y Gas == NotFound &&
-	checkAdjecentQuad (Puzzle leftTab upperTab puzzle) x y GasRight == NotFound &&
-	checkAdjecentQuad (Puzzle leftTab upperTab puzzle) x y GasUp == NotFound &&
-	checkAdjecentQuad (Puzzle leftTab upperTab puzzle) x y GasLeft == NotFound &&
-	checkAdjecentQuad (Puzzle leftTab upperTab puzzle) x y GasBottom == NotFound
--}
 
 houseHasOnlyOnePossiblePlaceForTank :: Int -> Int -> Puzzle -> Dirs-> Bool
 houseHasOnlyOnePossiblePlaceForTank x y (Puzzle leftTab upperTab fields) dir = --TODO oprócz unknown jeszcze Gas
@@ -152,7 +142,4 @@ houseNeedsGasTankHere (Puzzle leftTab upperTab puzzle) x y=
 	if y > 0 && houseHasOnlyOnePossiblePlaceForTank x (y-1) (Puzzle leftTab upperTab puzzle) Up then Up else
 	NotFound
 
-
---cleanPuzzle :: Puzzle -> Int -> Int -> Puzzle
---cleanPuzzle (Puzzle leftTab upperTab fields) x y = cleanPuzzle
 
