@@ -68,18 +68,18 @@ setAdjacentField (Puzzle leftTab upperTab fields) x y dir field =
         Up -> (Puzzle leftTab upperTab (
             (take (y-1) fields)++
             [(
-                (take (x) (fields!!y))++
+                (take (x) (fields!!(y-1)))++
                 [field]++
-                (drop (x+1) (fields!!y))
+                (drop (x+1) (fields!!(y-1)))
             )]++
             (drop (y) fields))
             )
         Down -> (Puzzle leftTab upperTab (
             (take (y+1) fields)++
             [(
-                (take (x) (fields!!y))++
+                (take (x) (fields!!(y+1)))++
                 [field]++
-                (drop (x+1) (fields!!y))
+                (drop (x+1) (fields!!(y+1)))
             )]++
             (drop (y+2) fields))
             ) 
