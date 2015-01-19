@@ -22,11 +22,12 @@ main = do
                  --print (getColumn (convertInput (length vCounts) (length hCounts) grid) 5 0)
                  --printPuzzle ((setEmptyFields puzzle 5 5)) 5 stdout
                  --printAll (solve (Puzzle vCounts hCounts (convertInput (length vCounts) (length hCounts) grid)) 5 5) 5  stdout
-                 printAll (solve puzzle 5 5) 5 stdout
+                 --printAll (solve (setEmptyFields puzzle 5 5) 5 5) 5 stdout
                  --printAllToFile (puzzle) 5  "result2.txt"
                  --print (checkRowReady ([Empty,Gas,GasRight,House,Unknown,Empty]) 2)
                  --print (length (filter (\x -> x == Empty || x == Gas) ([Empty,Gas,GasRight,House,Unknown,Empty])))
-                 --print (checkRowReady ([Empty,Empty,Gas,House,Unknown,Empty]) 2)
-                 --putStrLn "\n"
+                 print (checkRowReady ([Empty,Empty,Unknown,Empty,Unknown,Empty]) (vCounts!!3))
+                 putStrLn "\n"
                  --print (hCounts!!0)
                  --print (getColumn (fields) 5 0)
+                 printAll (((solve (setEmptyFields puzzle 5 5) 5 5))) 5 stdout

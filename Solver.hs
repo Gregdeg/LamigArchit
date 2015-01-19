@@ -138,6 +138,7 @@ checkRowReady (xs) c =
         False
 
 
+
 checkPuzzleSolved :: Puzzle -> Int -> Bool
 checkPuzzleSolved _ (-1) = True
 checkPuzzleSolved (Puzzle leftTab upperTab puzzle) i = if
@@ -191,11 +192,12 @@ solve (Puzzle leftTab upperTab fields) x y =
         if
             ((upperTab!!x /= 0) && (leftTab!!y /= 0)) &&
             (
-            ((checkRowReady (fields!!y) (leftTab!!y)))) ||
-            ((checkRowReady (getColumn fields 5 x) (upperTab!!x)) ||
-            gasField /= NotFound
+            ((checkRowReady (fields!!y) (leftTab!!y))) ||
+            ((checkRowReady (getColumn fields 5 x) (upperTab!!x))) ||
+            False --(gasField /= NotFound)
             )
         then
+        error "set"
                 solve (setGasFields (setEmptyFields (Puzzle leftTab upperTab fields) (length leftTab -1) (length upperTab -1)) x y) nx ny
         else
                 solve (setEmptyFields (Puzzle leftTab upperTab fields) (length leftTab -1) (length upperTab -1)) nx ny
