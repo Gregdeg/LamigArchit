@@ -16,17 +16,13 @@ setEmptyFields (Puzzle leftTab upperTab fields) x y =
         ny = if x == 0 then y - 1 else y
     in
     if
-        (fields!!y!!x == Unknown && (
-        (checkAdjecentQuad (Puzzle leftTab upperTab fields) x y House) == NotFound  ||
-        --(checkAdjecentQuad (Puzzle leftTab upperTab fields) x y GasHouse) /= NotFound ||
-        not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasUp) ||
-        not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasRight) ||
-        not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasLeft) ||
-        not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasBottom) ||
-        not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y Gas) ||
-        checkRowCompletness (fields!!y) (leftTab!!y) ||
-        checkRowCompletness (getColumn fields x 5) (upperTab!!x)
-        ))
+        fields!!y!!x == Unknown &&
+		(
+		checkRowCompletness (fields!!y) (leftTab!!y) ||
+        checkRowCompletness (getColumn fields x 5) (upperTab!!x) ||
+		(checkAdjecentQuad (Puzzle leftTab upperTab fields) x y House) == NotFound  ||
+        elem False (map (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y) [GasRight, GasUp, GasLeft, GasBottom, Gas])
+		)
     then
         setEmptyFields
             (Puzzle
@@ -60,7 +56,27 @@ setGasFields (Puzzle leftTab upperTab fields) x y =
 		dir = checkAdjecentQuad (Puzzle leftTab upperTab fields) x y House
 		gasField = houseNeedsGasTankHere (Puzzle leftTab upperTab fields) x y
     in
-    if
+	if length gasField>0 then
+		(setAdjacentField
+            (Puzzle
+                leftTab --((take y leftTab) ++ [leftTab!!y-1] ++ (drop (y+1) leftTab)) --y+1
+                upperTab --((take x upperTab) ++ [upperTab!!x-1] ++ (drop (x+1) upperTab)) -- x+1
+                (
+                    (take y fields)++
+                    [(
+                        (take x (fields!!y))++
+                        gasField++
+                        (drop (x+1) (fields!!y)) --x+1
+                    )]++
+                    (drop (y+1) fields) --y+1
+                    )
+                )
+                x
+                y
+                dir
+            GasHouse
+		)
+    else if
         elem (fields!!y!!x)  [Unknown, Gas] &&
         (dir /= NotFound) &&
         --(dir /= MultipleFound) &&
@@ -96,28 +112,8 @@ setGasFields (Puzzle leftTab upperTab fields) x y =
                 dir
                 GasHouse
             )
-    else if length gasField>0 then
-		(setAdjacentField
-            (Puzzle
-                leftTab --((take y leftTab) ++ [leftTab!!y-1] ++ (drop (y+1) leftTab)) --y+1
-                upperTab --((take x upperTab) ++ [upperTab!!x-1] ++ (drop (x+1) upperTab)) -- x+1
-                (
-                    (take y fields)++
-                    [(
-                        (take x (fields!!y))++
-                        gasField++
-                        (drop (x+1) (fields!!y)) --x+1
-                    )]++
-                    (drop (y+1) fields) --y+1
-                    )
-                )
-                x
-                y
-                dir
-            GasHouse
-		)
-		else
-			(Puzzle leftTab upperTab fields)
+	else
+		(Puzzle leftTab upperTab fields)
 
 --cleanPuzzle :: Puzzle -> Int -> Int -> Puzzle
 --cleanPuzzle (Puzzle leftTab upperTab fields) x y = cleanPuzzle
@@ -194,7 +190,7 @@ solve (Puzzle leftTab upperTab fields) _ (-1) = do
 	printAll (Puzzle leftTab upperTab fields) 5 stdout
 	getLine
 	if checkPuzzleSolved (Puzzle leftTab upperTab fields) 5 then
-		putStrLn "\n\nSolved!"
+		putStrLn "\nSolved!"
 	else
 		solve (Puzzle leftTab upperTab fields) 5 5
 {-

@@ -9,7 +9,7 @@ data Field = Unknown | Empty | House | GasHouse | Gas| GasUp | GasRight | GasBot
 instance Show Field where
     show f=case f of
         Unknown -> "-"
-        Empty -> "x"
+        Empty -> " "
         House -> "h"
         GasHouse -> "H"
         GasUp -> "u"
@@ -68,18 +68,18 @@ setAdjacentField (Puzzle leftTab upperTab fields) x y dir field =
         Up -> (Puzzle leftTab upperTab (
             (take (y-1) fields)++
             [(
-                (take (x) (fields!!y))++
+                (take (x) (fields!!(y-1)))++
                 [field]++
-                (drop (x+1) (fields!!y))
+                (drop (x+1) (fields!!(y-1)))
             )]++
             (drop (y) fields))
             )
         Down -> (Puzzle leftTab upperTab (
             (take (y+1) fields)++
             [(
-                (take (x) (fields!!y))++
+                (take (x) (fields!!(y+1)))++
                 [field]++
-                (drop (x+1) (fields!!y))
+                (drop (x+1) (fields!!(y+1)))
             )]++
             (drop (y+2) fields))
             ) 
@@ -94,10 +94,10 @@ checkAdjecentQuad _ (-1) _ _ = NotFound
 checkAdjecentQuad _ _ (-1) _ = NotFound
 checkAdjecentQuad (Puzzle leftTab upperTab fields) x y field =
     let dirs = [(y > 0  && fields!!(y-1)!!x == field)]
-                ++ [(y < ((length upperTab) -1) && fields!!(y+1)!!x == field)]
+                ++ [(y < ((length leftTab) -1) && fields!!(y+1)!!x == field)]
                 ++ [(x > 0 && fields!!y!!(x-1) == field)]
-                ++ [(x < ((length leftTab) -1 ) && fields!!y!!(x+1) == field)]
-        trues =  length$filter (==True) dirs
+                ++ [(x < ((length upperTab) -1 ) && fields!!y!!(x+1) == field)]
+        trues =  length $ filter (==True) dirs
     in
     case trues of
         0 -> NotFound
