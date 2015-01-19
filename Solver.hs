@@ -73,7 +73,7 @@ setGasFields (Puzzle leftTab upperTab fields) x y =
             (setAdjacentField
                 (Puzzle
                     leftTab --((take y leftTab) ++ [leftTab!!y-1] ++ (drop (y+1) leftTab)) --y+1
-                    upperTab --((take x upperTab) ++ [upperTab!!x-1] ++ (drop (x+1) upperTab)) -- x+1
+                    upperTab --((take x upperTab) ++ [upperTab!!x-1] ++ (drop (x+1) upperczTab)) -- x+1
                     (
                         (take y fields)++
                         [(
@@ -145,10 +145,10 @@ checkPuzzleSolved (Puzzle leftTab upperTab puzzle) i = if
     then checkPuzzleSolved (Puzzle leftTab upperTab puzzle) (i-1)
     else False
 
---bierze kolumnę indeksując od 0
+--zwraca zadaną drugim parametrem kolumnę
 getColumn :: [[Field]] -> Int -> Int-> [Field]
 getColumn _ (-1) _ = []
-getColumn fields x y = [fields!!y!!x] ++ getColumn fields (x-1) y
+getColumn fields y x = [fields!!y!!x] ++ getColumn fields (y-1) x
 
 solve :: Puzzle -> Int -> Int -> Puzzle
 solve (Puzzle leftTab upperTab fields) _  (-1) =
@@ -192,7 +192,7 @@ solve (Puzzle leftTab upperTab fields) x y =
             ((upperTab!!x /= 0) && (leftTab!!y /= 0)) &&
             (
             ((checkRowReady (fields!!y) (leftTab!!y)))) ||
-            ((checkRowReady (getColumn fields 6 x) (upperTab!!x)) ||
+            ((checkRowReady (getColumn fields 5 x) (upperTab!!x)) ||
             gasField /= NotFound
             )
         then
