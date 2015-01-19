@@ -133,10 +133,6 @@ checkRowReady (xs) c =
     in
     if cg == empties then True else False
     
-    --if c == 2 then error "2" else error "nie 2"
-
-
-
 
 checkPuzzleSolved :: Puzzle -> Int -> Bool
 checkPuzzleSolved _ (-1) = True
@@ -193,10 +189,9 @@ solve (Puzzle leftTab upperTab fields) x y =
             (
             (checkRowReady (fields!!2) (leftTab!!2)) ||
             ((checkRowReady (getColumn fields 5 x) (upperTab!!x))) ||
-            False --(gasField /= NotFound)
+            (gasField /= NotFound)
             )
         then
-        error "set"
                 solve (setGasFields (setEmptyFields (Puzzle leftTab upperTab fields) (length leftTab -1) (length upperTab -1)) x y) nx ny
         else
                 solve (setEmptyFields (Puzzle leftTab upperTab fields) (length leftTab -1) (length upperTab -1)) nx ny
