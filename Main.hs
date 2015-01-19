@@ -19,7 +19,7 @@ main = do
                  --printUpperTab vCounts 5 stdout
                  --printPuzzle (setGasFields puzzle 5 5) hCounts 5 stdout
                  --print (getColumn (convertInput (length vCounts) (length hCounts) grid) 5 0)
-                 --printPuzzle (setGasFields (setEmptyFields puzzle 5 5) 5 5) 5 stdout
+                 --printPuzzle ((setEmptyFields puzzle 5 5)) 5 stdout
                  --printAll (solve (Puzzle vCounts hCounts (convertInput (length vCounts) (length hCounts) grid)) 5 5) 5  stdout
                  printAll (solve ((setEmptyFields (puzzle)  5 5)) 5 5) 5 stdout
                  --printAllToFile (puzzle) 5  "result2.txt"

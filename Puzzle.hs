@@ -120,29 +120,38 @@ checkAdjecentOcta (Puzzle leftTab upperTab fields) x y field =
     then False
     else True
 
-houseHasOnlyOnePossiblePlaceForTank :: Int -> Int -> Puzzle -> Bool
+{-houseHasOnlyOnePossiblePlaceForTank :: Int -> Int -> Puzzle -> Bool
 houseHasOnlyOnePossiblePlaceForTank x y (Puzzle leftTab upperTab puzzle)=
 	checkAdjecentQuad (Puzzle leftTab upperTab puzzle) x y Unknown /= NotFound &&
 	checkAdjecentQuad (Puzzle leftTab upperTab puzzle) x y Unknown /= MultipleFound &&
-	
 	checkAdjecentQuad (Puzzle leftTab upperTab puzzle) x y Gas == NotFound &&
 	checkAdjecentQuad (Puzzle leftTab upperTab puzzle) x y GasRight == NotFound &&
 	checkAdjecentQuad (Puzzle leftTab upperTab puzzle) x y GasUp == NotFound &&
 	checkAdjecentQuad (Puzzle leftTab upperTab puzzle) x y GasLeft == NotFound &&
 	checkAdjecentQuad (Puzzle leftTab upperTab puzzle) x y GasBottom == NotFound
+-}
 
--- Sprawdza, czy istnieje domek, który musi mieć na danym polu swój zbiornik; jeśli tak, zwraca kierunek zbiornika
+houseHasOnlyOnePossiblePlaceForTank :: Int -> Int -> Puzzle -> Dirs-> Bool
+houseHasOnlyOnePossiblePlaceForTank x y (Puzzle leftTab upperTab fields) dir = --TODO oprócz unknown jeszcze Gas
+        (fields!!y!!x == House &&
+	checkAdjecentQuad (Puzzle leftTab upperTab fields) x y Unknown == dir)  ||
+        (fields!!y!!x == House &&
+	checkAdjecentQuad (Puzzle leftTab upperTab fields) x y Gas == dir)
+
+
+-- Sprawdza, czy istnieje obok domek, który musi mieć na danym polu swój zbiornik; jeśli tak, zwraca kierunek zbiornika
 houseNeedsGasTankHere :: Puzzle -> Int -> Int -> Dirs
 houseNeedsGasTankHere (Puzzle leftTab upperTab puzzle) x y=
 	--prawo
-	if x < (length upperTab-1) && houseHasOnlyOnePossiblePlaceForTank (x+1) y (Puzzle leftTab upperTab puzzle) then Puzzle.Left else
+	if x < ((length upperTab)-1) && houseHasOnlyOnePossiblePlaceForTank (x+1) y (Puzzle leftTab upperTab puzzle) Puzzle.Right then Puzzle.Right else
 	--lewo
-	if x>0 && houseHasOnlyOnePossiblePlaceForTank (x-1) y (Puzzle leftTab upperTab puzzle) then Puzzle.Right else
+	if x > 0 && houseHasOnlyOnePossiblePlaceForTank (x-1) y (Puzzle leftTab upperTab puzzle) Puzzle.Left then Puzzle.Left else
 	--dol
-	if y< (length leftTab-1) && houseHasOnlyOnePossiblePlaceForTank x (y+1) (Puzzle leftTab upperTab puzzle) then Up else
+	if y < ((length leftTab)-1) && houseHasOnlyOnePossiblePlaceForTank x (y+1) (Puzzle leftTab upperTab puzzle) Down then Down else
 	--gora
-	if y>0 && houseHasOnlyOnePossiblePlaceForTank x (y-1) (Puzzle leftTab upperTab puzzle) then Down else
+	if y > 0 && houseHasOnlyOnePossiblePlaceForTank x (y-1) (Puzzle leftTab upperTab puzzle) Up then Up else
 	NotFound
+
 
 --cleanPuzzle :: Puzzle -> Int -> Int -> Puzzle
 --cleanPuzzle (Puzzle leftTab upperTab fields) x y = cleanPuzzle

@@ -13,7 +13,7 @@ setEmptyFields (Puzzle leftTab upperTab fields) x y =
         ny = if x == 0 then y - 1 else y
     in
     if
-        (fields!!y!!x == Unknown && (
+        (fields!!y!!x == Unknown) && (((
                         (checkAdjecentQuad (Puzzle leftTab upperTab fields) x y House) == NotFound  ||
                         not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasUp) ||
                         not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasRight) ||
@@ -22,7 +22,7 @@ setEmptyFields (Puzzle leftTab upperTab fields) x y =
                         not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y Gas) ||
                         checkRowCompletness (fields!!y) (leftTab!!y) ||
                         checkRowCompletness (getColumn fields 5 x) (upperTab!!x)
-                        ))
+                        )))
     then
         setEmptyFields
             (Puzzle
@@ -56,17 +56,18 @@ setGasFields (Puzzle leftTab upperTab fields) x y =
     let
         mustDir = houseNeedsGasTankHere (Puzzle leftTab upperTab fields) x y
         dir = if mustDir /= NotFound then mustDir else checkAdjecentQuad (Puzzle leftTab upperTab fields) x y House
+        --dir = checkAdjecentQuad (Puzzle leftTab upperTab fields) x y House
     in
     if
         (fields!!y!!x == Unknown || fields!!y!!x == Gas) &&
         (dir /= NotFound) &&
         --(dir /= MultipleFound) &&
-        {-(checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasUp) &&
+        (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasUp) &&
         (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasRight) &&
         (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasLeft) &&
         (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasBottom) &&
-        (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y Gas)-}
-        elem True (map (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y) [GasRight, GasUp, GasLeft, GasBottom, Gas])
+        (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y Gas)
+        --elem True (map (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y) [GasRight, GasUp, GasLeft, GasBottom, Gas])
     then
     --error "setGas"
             (setAdjacentField
@@ -183,7 +184,7 @@ solve (Puzzle leftTab upperTab fields) x y =
         ny = if x == 0 then y - 1 else y
         gasField = houseNeedsGasTankHere (Puzzle leftTab upperTab fields) x y
     in
-    if 
+    if
         (not (checkPuzzleSolved (Puzzle leftTab upperTab fields) 5)) &&
         elem (fields!!y!!x) [Unknown,Gas]
     then
