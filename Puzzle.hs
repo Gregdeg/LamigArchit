@@ -1,8 +1,7 @@
 module Puzzle where
 
 import System.IO
---import Data.Sequence
---cokolwiek
+
 --Typ reprezentujący pole łamigłówki - nieznane, puste, domek i cztery kierunki zbiorników
 data Field = Unknown | Empty | House | GasHouse | Gas| GasUp | GasRight | GasBottom | GasLeft deriving Eq
 
@@ -18,9 +17,13 @@ instance Show Field where
         GasLeft -> "l"
         Gas -> "g"
 
+--Macierz wraz z krotnościami
 data Puzzle = Puzzle [Int] [Int] [[Field]]
+
+--Kierunki wraz z informacją o wielu
 data Dirs = Up | Right | Down | Left | NotFound | MultipleFound deriving (Eq, Show)
-data Completness = Full | Equal | None
+
+--Przetwarza format wsadowy na macierz pól
 convertInput :: Int -> Int -> [(Int,Int)] -> [[Field]]
 convertInput (-1) _ _ = []
 convertInput v h tuples =
@@ -38,12 +41,12 @@ convertInput v h tuples =
         h
     ]
 
-
+-- Wstawia domy do macierzy pól
 convertToRow :: [Int] -> Int -> [Field]
 convertToRow _ (-1) = []
 convertToRow indices count = if elem count indices  then convertToRow indices (count - 1) ++ [House] else convertToRow indices (count - 1) ++ [Unknown]
 
--- ustawia sasiednie pole na okreslony typ
+-- Ustawia sasiednie pole na okreslony typ, w praktyce domy z gazem
 setAdjacentField :: Puzzle -> Int -> Int -> Dirs -> Field -> Puzzle
 setAdjacentField (Puzzle leftTab upperTab fields) x y dir field =
     case dir of
