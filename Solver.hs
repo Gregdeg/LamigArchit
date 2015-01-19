@@ -19,7 +19,7 @@ setEmptyFields (Puzzle leftTab upperTab fields) x y =
                         not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y GasBottom) ||
                         not (checkAdjecentOcta (Puzzle leftTab upperTab fields) x y Gas) ||
                         checkRowCompletness (fields!!y) (leftTab!!y) ||
-                        checkRowCompletness (getColumn fields ((length upperTab)-1) x) (upperTab!!x)
+                        checkRowCompletness (getColumn fields ((length leftTab)-1) x) (upperTab!!x)
                         )))
     then
         setEmptyFields
@@ -122,10 +122,10 @@ getColumn fields y x = [fields!!y!!x] ++ getColumn fields (y-1) x
 -- Ostatni element, sprawdzenie poprawności
 solve :: Puzzle -> Int -> Int -> Puzzle
 solve (Puzzle leftTab upperTab fields) _  (-1) =
-	if checkPuzzleSolved (Puzzle leftTab upperTab fields) (length leftTab-1) then
+	if checkPuzzleSolved (Puzzle leftTab upperTab fields) ((length leftTab)-1) then
 		(Puzzle leftTab upperTab fields)
 	else
-		solve (Puzzle leftTab upperTab fields) ((length leftTab)-1) ((length upperTab)-1)
+		solve (Puzzle leftTab upperTab fields) ((length upperTab)-1) ((length leftTab)-1)
 
 --Główna funkcja aplikacji, wykonywana aż do ukończenia puzzli
 solve (Puzzle leftTab upperTab fields) x y =
@@ -146,8 +146,8 @@ solve (Puzzle leftTab upperTab fields) x y =
                 (gasField /= NotFound)
             )
         then
-                solve (setGasFields (setEmptyFields (Puzzle leftTab upperTab fields) ((length leftTab) -1) ((length upperTab) -1)) x y) nx ny
+                solve (setGasFields (setEmptyFields (Puzzle leftTab upperTab fields) ((length upperTab) -1) ((length leftTab) -1)) x y) nx ny
         else
-                solve (setEmptyFields (Puzzle leftTab upperTab fields) ((length leftTab) -1) ((length upperTab) -1)) nx ny
+                solve (setEmptyFields (Puzzle leftTab upperTab fields) ((length upperTab) -1) ((length leftTab) -1)) nx ny
     else
             solve (Puzzle leftTab upperTab fields) nx ny

@@ -87,9 +87,6 @@ setAdjacentField (Puzzle leftTab upperTab fields) x y dir field =
             (drop (y+2) fields))
             ) 
         _ -> (Puzzle leftTab upperTab fields)
-            
-            
-            
 
 --Sprawdza, czy w polach krzyżowo przyległych do danego jest podany w parametrze typ pola
 checkAdjecentQuad :: Puzzle -> Int -> Int -> Field -> Dirs
@@ -117,7 +114,7 @@ checkAdjecentOcta (Puzzle leftTab upperTab fields) x y field =
         (x > 0 && fields!!y!!(x-1) == field) || --W
         (x < ((length upperTab) -1) && fields!!y!!(x+1) == field) || --E
         (y > 0 && x > 0 && fields!!(y-1)!!(x-1) == field) || --SW
-        (y > 0 && x < ((length leftTab) -1) &&  fields!!(y-1)!!(x+1) == field) || --SE
+        (y > 0 && x < ((length upperTab) -1) &&  fields!!(y-1)!!(x+1) == field) || --SE
         (x > 0 && y < ((length leftTab) -1) && fields!!(y+1)!!(x-1) == field) || --NW
         ((x < ((length upperTab) -1)) && ((y < ((length leftTab) -1))) && fields!!(y+1)!!(x+1) == field) --NE
     then False
