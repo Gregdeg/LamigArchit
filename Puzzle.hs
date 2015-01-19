@@ -131,6 +131,19 @@ houseHasOnlyOnePossiblePlaceForTank x y (Puzzle leftTab upperTab puzzle)=
 	checkAdjecentQuad (Puzzle leftTab upperTab puzzle) x y GasLeft == NotFound &&
 	checkAdjecentQuad (Puzzle leftTab upperTab puzzle) x y GasBottom == NotFound
 
+-- Sprawdza, czy istnieje domek, który musi mieć na danym polu swój zbiornik; jeśli tak, zwraca kierunek zbiornika
+houseNeedsGasTankHere :: Puzzle -> Int -> Int -> Dirs
+houseNeedsGasTankHere (Puzzle leftTab upperTab puzzle) x y=
+	--prawo
+	if x < (length upperTab-1) && houseHasOnlyOnePossiblePlaceForTank (x+1) y (Puzzle leftTab upperTab puzzle) then Puzzle.Left else
+	--lewo
+	if x>0 && houseHasOnlyOnePossiblePlaceForTank (x-1) y (Puzzle leftTab upperTab puzzle) then Puzzle.Right else
+	--dol
+	if y< (length leftTab-1) && houseHasOnlyOnePossiblePlaceForTank x (y+1) (Puzzle leftTab upperTab puzzle) then Up else
+	--gora
+	if y>0 && houseHasOnlyOnePossiblePlaceForTank x (y-1) (Puzzle leftTab upperTab puzzle) then Down else
+	NotFound
+
 --cleanPuzzle :: Puzzle -> Int -> Int -> Puzzle
 --cleanPuzzle (Puzzle leftTab upperTab fields) x y = cleanPuzzle
 
