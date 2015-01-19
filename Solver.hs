@@ -187,9 +187,9 @@ solve (Puzzle leftTab upperTab fields) x y =
         if
             ((upperTab!!x /= 0) && (leftTab!!y /= 0)) &&
             (
-            (checkRowReady (fields!!2) (leftTab!!2)) ||
-            ((checkRowReady (getColumn fields 5 x) (upperTab!!x))) ||
-            (gasField /= NotFound)
+                (checkRowReady (fields!!2) (leftTab!!2)) ||
+                ((checkRowReady (getColumn fields 5 x) (upperTab!!x))) ||
+                (gasField /= NotFound)
             )
         then
                 solve (setGasFields (setEmptyFields (Puzzle leftTab upperTab fields) (length leftTab -1) (length upperTab -1)) x y) nx ny

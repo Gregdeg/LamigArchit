@@ -19,7 +19,7 @@ instance Show Field where
         Gas -> "g"
 
 data Puzzle = Puzzle [Int] [Int] [[Field]]
-data Dirs = Up | Right | Down | Left | NotFound | MultipleFound deriving Eq
+data Dirs = Up | Right | Down | Left | NotFound | MultipleFound deriving (Eq, Show)
 data Completness = Full | Equal | None
 convertInput :: Int -> Int -> [(Int,Int)] -> [[Field]]
 convertInput (-1) _ _ = []

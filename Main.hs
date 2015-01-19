@@ -17,6 +17,16 @@ main = do
                  grid <- return (read (linesOfFile !! 2) :: [(Int,Int)])
                  let puzzle = Puzzle vCounts hCounts (convertInput (length vCounts -1) (length hCounts -1) grid)
                  let fields = (convertInput (length vCounts -1) (length hCounts -1) grid)
+                 let solvedPuzzle1Fields =     [
+                        [Empty,GasHouse,Unknown,Empty,Empty,Empty],
+                        [Empty,Empty,Empty,Empty,Empty,Empty],
+                        [Empty,Empty,GasBottom,Empty,GasBottom,Empty],
+                        [GasBottom,Empty,GasHouse,Empty,GasHouse,Empty],
+                        [GasHouse,Empty,Empty,GasRight,GasHouse,GasBottom],
+                        [Empty,GasRight,GasHouse,Empty,Empty,GasHouse]
+                        ]
+                 let solvedPuzzle1 = Puzzle [1,0,2,1,2,1] [1,1,2,1,1,1] solvedPuzzle1Fields
+
                  --printUpperTab vCounts 5 stdout
                  --printPuzzle (setGasFields puzzle 5 5) hCounts 5 stdout
                  --print (getColumn (convertInput (length vCounts) (length hCounts) grid) 5 0)
@@ -26,9 +36,13 @@ main = do
                  --printAllToFile (puzzle) 5  "result2.txt"
                  --print (checkRowReady ([Empty,Gas,GasRight,House,Unknown,Empty]) 2)
                  --print (length (filter (\x -> x == Empty || x == Gas) ([Empty,Gas,GasRight,House,Unknown,Empty])))
-                 --print (checkRowReady ([Empty,Empty,Unknown,Empty,Unknown,Empty]) (vCounts!!3))
+                 --print (checkRowReady ([Empty,Empty,GasLeft,Empty,Unknown,Empty]) 2)
+                 --print (checkRowCompletness  ([Empty,Empty,GasLeft,Gas,GasUp,Empty]) 2)
                  --putStrLn "\n"
                  --print (hCounts!!0)
                  --print (getColumn (fields) 5 0)
                  --print (fields!!5)
-                 printAll (((solve (setEmptyFields puzzle 5 5) 5 5))) 5 stdout
+                 printAll solvedPuzzle1 5 stdout
+                 putStrLn "\n"
+                 print ( (houseNeedsGasTankHere solvedPuzzle1 2 0))
+                 print (solvedPuzzle1Fields!!0!!2)
