@@ -8,9 +8,9 @@ import System.IO
 
 main = do
                  putStrLn "Podaj nazwe pliku"
-                 --fileName <- getLine
+                 fileName <- getLine
                  putStrLn "Wczytuje..."
-                 fileContent <- readFile "puzzle1.txt"
+                 fileContent <- readFile fileName
                  let linesOfFile = lines fileContent
                  vCounts <- return (read (linesOfFile !! 0) :: [Int])
                  hCounts <- return (read (linesOfFile !! 1) :: [Int])
